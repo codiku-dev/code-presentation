@@ -41,6 +41,8 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.45.0",
     "react-router-dom": "^6.22.3",
+    "shiki": "^1.10.1",
+    "shiki-magic-move": "^0.4.2",
     "tailwind-merge": "^1.13.2",
     "tailwindcss-animate": "^1.0.6",
     "zod": "^3.21.4"
