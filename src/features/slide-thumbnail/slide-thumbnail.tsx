@@ -1,13 +1,10 @@
 import { javascript } from "@codemirror/lang-javascript";
 import { tokyoNight } from "@uiw/codemirror-theme-tokyo-night";
 import CodeMirror from "@uiw/react-codemirror";
-
+import "./slide-thumbnail.css";
 export function SlideThumbnail(p: { code: string; onClick: () => void }) {
   return (
-    <div
-      className="rounded-sm h-20 bg-black overflow-hidden"
-      onClick={p.onClick}
-    >
+    <div className="rounded-sm h-20 bg-black " onClick={p.onClick}>
       <div className="p-2">
         <CodeMirror
           value={p.code.substring(0, 240)}
