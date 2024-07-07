@@ -8,6 +8,8 @@ export function SlideLayout(p: {
   isPreviewMode: boolean;
   slide: Slide;
   onChangeFilename: (filename: string) => void;
+  onPointEmoji: (emoji: {x: number, y: number, emoji: string, name: string}) => void;
+  selectedEmoji: {name: string, emoji: string}
 }) {
   const header = (
     <div className="relative flex ">
@@ -20,7 +22,7 @@ export function SlideLayout(p: {
               placeholder="code.tsx"
               value={p.slide.fileName || ""}
               onChange={(e) => p.onChangeFilename(e.target.value)}
-              className="flex min-w-20 w-20 max-w-44 bg-red-400  text-white hover:text-white cursor-pointer bg-transparent border-0 border-b-2 border-transparent focus-visible:ring-offset-0 focus-visible:ring-0"
+              className="flex min-w-20 w-20 max-w-44   text-white hover:text-white cursor-pointer bg-transparent border-0 border-b-2 border-transparent focus-visible:ring-offset-0 focus-visible:ring-0"
             />
           </div>
         ) : (
@@ -36,15 +38,37 @@ export function SlideLayout(p: {
   );
   return (
     <div
+    id="parent"
+    onClick={(e: React.MouseEvent<HTMLElement>) => {
+      e.stopPropagation();
+      var mouseX = e.clientX;
+      var mouseY = e.clientY;
+        const parentRect = e.currentTarget.getBoundingClientRect();
+        const xPercent = ((mouseX - parentRect.left) / parentRect.width) * 100;
+        const yPercent = ((mouseY - parentRect.top) / parentRect.height) * 100;
+        console.log(`x: ${xPercent}%, y: ${yPercent}%`);
+        console.log(`x: ${mouseX}, y: ${mouseY}`)
+        if(p.selectedEmoji.name!==""){
+          console.log("add emoji", {x: xPercent, y: yPercent, emoji: p.selectedEmoji.emoji, name: p.selectedEmoji.name})
+          p.onPointEmoji({x: xPercent, y: yPercent, emoji: p.selectedEmoji.emoji, name: p.selectedEmoji.name})
+        }
+
+    }}
       className={cx(
-        "   min-h-[90%] bg-primary rounded-md  border-2 border-gray-700 p-4 text-white ",
-        p.isPreviewMode
-          ? "min-w-[1200px] max-h-[930px] overflow-y-auto"
-          : "max-h-[950px] min-w-[930px] max-w-[1200px] "
+        "relative max-h-[930px] overflow-y-auto min-h-[90%] min-w-[1200px] bg-primary rounded-md  border-2 border-gray-700 p-4 text-white ",
       )}
     >
       {header}
       {p.children}
+            {p.slide.emojiList.map((emoji, index) => {
+              return (
+                <div key={index} className="absolute" style={{ top: `${emoji.y-(p.isPreviewMode?3:2.5)}%`, left: `${emoji.x-(p.isPreviewMode?6:0)}%` }}>
+                  <div className="text-[10rem]">{emoji.emoji}</div>
+              </div> 
+              )
+            })}
+
+             
     </div>
   );
 }

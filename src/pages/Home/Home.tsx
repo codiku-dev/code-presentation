@@ -6,12 +6,15 @@ import { SlidePreview } from "@/features/slide-preview/slide-preview";
 import { cx } from "class-variance-authority";
 import { useEffect, useState } from "react";
 import { INITIAL_SLIDES } from "./constant";
-import { Slide } from "@/types/slide.types";
+import {  Slide } from "@/types/slide.types";
+import { EmojiList } from "@/features/emoji-list/emoji-list";
 export function Home() {
+
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [slideList, setSlideList] = useState<Slide[]>(INITIAL_SLIDES||JSON.parse(localStorage.getItem("slideList") || "[]"));
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const currentSlide = slideList[currentSlideIndex];
+  const [selectedEmoji, setSelectedEmoji] = useState<{name: string, emoji: string}>({name: "", emoji: ""});
 
   useEffect(()=> {
     localStorage.setItem("slideList", JSON.stringify(slideList))
@@ -28,7 +31,7 @@ export function Home() {
     setSlideList(newSlideList);
   };
   const addSlide = () => {
-    setSlideList([...slideList, {fileName: "", code: ""}]);
+    setSlideList([...slideList, {fileName: "", code: "", emojiList: []}]);
     setCurrentSlideIndex(slideList.length);
   };
   const deleteSlide = (index: number) => {
@@ -120,10 +123,16 @@ export function Home() {
         <div
           className={`h-full w-full gap-12 pt-12 overflow-y-hidde flex-center`}
         >
-          {currentSlide &&<SlideLayout
+          {currentSlide && <SlideLayout
             isPreviewMode={isPreviewMode}
             slide={currentSlide}
             onChangeFilename={updateCurrentSlideFilename}
+            selectedEmoji={selectedEmoji}
+            onPointEmoji={(emoji) => {
+             const newSlideList = [...slideList];
+             newSlideList[currentSlideIndex].emojiList.push(emoji);
+             setSlideList(newSlideList);
+            }}
           >
             {isPreviewMode ? (
               <SlidePreview slide={currentSlide} />
@@ -137,6 +146,9 @@ export function Home() {
         </div>
       </div>
       {slideList.length > 0 && buttonMode}
+      <div className="absolute bottom-0 right-0">
+        <EmojiList onSelect={setSelectedEmoji} selectedEmoji={selectedEmoji}/>
+      </div>
     </div>
   );
   return isPreviewMode

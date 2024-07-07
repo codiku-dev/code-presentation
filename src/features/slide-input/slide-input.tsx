@@ -32,7 +32,7 @@ export function SlideInput(p: {
     };
   }, [p.slide.code, p.onCodeChange]);
   return (
-    <div className="p-2">
+    <div className="p-2" onClick={(e) => {}}>
       <CodeMirror
         value={p.slide.code}
         style={{

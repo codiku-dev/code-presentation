@@ -6,12 +6,14 @@ export const INITIAL_SLIDES: Slide[] = [
     code: `function StartEditingYourSlides(){
       console.log("ctrl+s will format")
     }`,
+    emojiList: []
   },
   {
     fileName: "code.tsx",
     code: `function StartEditingYourSlides() {
   console.log("Click on preview to animate it")
 }`,
+emojiList: []
   }
  
 ];
