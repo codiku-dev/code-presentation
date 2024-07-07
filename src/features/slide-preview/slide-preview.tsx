@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import { ShikiMagicMove } from "shiki-magic-move/react";
 import {
-  type HighlighterCore,
-  getSingletonHighlighter,
   BundledTheme,
+  getSingletonHighlighter,
+  type HighlighterCore,
 } from "shiki";
 import "shiki-magic-move/dist/style.css";
+import { ShikiMagicMove } from "shiki-magic-move/react";
 const CODE_THEME: BundledTheme = "github-dark";
-const INITIAL_CODE = `const hello = 'world'
-console.log('hello world!');"`;
 
 export function SlidePreview(p: { code: string }) {
   const [highlighter, setHighlighter] = useState<HighlighterCore>();
@@ -27,6 +25,7 @@ export function SlidePreview(p: { code: string }) {
             lineNumbers: false,
             containerStyle: false,
           }}
+          className="text-2xl"
         />
       </div>
     );

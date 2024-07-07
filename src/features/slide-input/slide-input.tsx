@@ -1,7 +1,6 @@
+import { javascript } from "@codemirror/lang-javascript";
 import { githubDark } from "@uiw/codemirror-theme-github";
 import CodeMirror from "@uiw/react-codemirror";
-import { javascript } from "@codemirror/lang-javascript";
-import { SlideLayout } from "../slide-layout";
 import "./slide-input.css";
 
 export function SlideInput(p: { code: string }) {
@@ -10,7 +9,8 @@ export function SlideInput(p: { code: string }) {
       <CodeMirror
         value={p.code}
         style={{
-          fontSize: "1.085rem",
+          fontSize: "1.5rem",
+          margin:"5px"
         }}
         theme={githubDark}
         basicSetup={{

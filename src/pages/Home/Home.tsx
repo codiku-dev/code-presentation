@@ -1,12 +1,13 @@
-import { SlideNavigation } from "@/features/slide-navigation";
+import { Button } from "@/components/ui/button";
+import { Navigation } from "@/features/navigation";
 import { SlideInput } from "@/features/slide-input/slide-input";
 import { SlideLayout } from "@/features/slide-layout";
-import { Button } from "@/components/ui/button";
 import { SlidePreview } from "@/features/slide-preview/slide-preview";
-import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
 
-const INITIAL_CODE = `const hey = "Try to preview !"`;
+const INITIAL_CODE = `const hey = "Edit this code and preview !"`;
+
 export function Home() {
   const [isPreviewShown, setisPreviewShown] = useState(false);
   const [code, setCode] = useState(INITIAL_CODE);
@@ -15,7 +16,7 @@ export function Home() {
     <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
       <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,#d5c5ff,transparent)]">
         <div className="flex gap-2">
-          <SlideNavigation />
+          <Navigation />
           <div className=" p-2 w-full  mt-6 flex-center">
             <div className={`flex w-full flex-center  gap-12 `}>
               {isPreviewShown && (

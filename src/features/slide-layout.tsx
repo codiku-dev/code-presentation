@@ -14,7 +14,7 @@ export function SlideLayout({ children }: { children: React.ReactNode }) {
     </div>
   );
   return (
-    <div className=" min-w-[900px] h-[600px]  bg-primary rounded-md  border-4 border-secondary p-4 text-white">
+    <div className=" min-w-[1200px] h-[600px]  bg-primary rounded-md  border-4 border-secondary p-4 text-white">
       {header}
       {children}
     </div>

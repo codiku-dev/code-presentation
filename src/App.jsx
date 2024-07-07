@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Home } from "@/pages/Home/Home";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ROUTES } from "./router";
 export function App() {
   return (
