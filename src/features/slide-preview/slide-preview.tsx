@@ -13,7 +13,7 @@ export function SlidePreview(p: { code: string }) {
 
   const renderAnimatedCode = () => {
     return (
-      <div className="p-4 bg-blue-400">
+      <div className="p-4 ">
         <ShikiMagicMove
           lang="ts"
           theme={CODE_THEME}

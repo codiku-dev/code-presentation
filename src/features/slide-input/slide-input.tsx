@@ -3,14 +3,14 @@ import { githubDark } from "@uiw/codemirror-theme-github";
 import CodeMirror from "@uiw/react-codemirror";
 import "./slide-input.css";
 
-export function SlideInput(p: { code: string , style? : React.CSSProperties}) {
+export function SlideInput(p: { code: string, style?: React.CSSProperties, onChange: (value: string) => void }) {
   return (
     <div className="p-2">
       <CodeMirror
         value={p.code}
         style={{
           fontSize: "1.5rem",
-          margin:"5px",
+          margin: "5px",
           ...p.style
         }}
         theme={githubDark}
@@ -19,7 +19,7 @@ export function SlideInput(p: { code: string , style? : React.CSSProperties}) {
         }}
         extensions={[javascript({ jsx: true, typescript: true })]}
         onChange={(value, viewUpdate) => {
-          console.log("value:", value);
+          p.onChange(value);
         }}
       />
     </div>
