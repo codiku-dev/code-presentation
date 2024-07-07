@@ -1,9 +1,10 @@
 import { cx } from "class-variance-authority";
 import { Plus } from "lucide-react";
 import { SlideThumbnail } from "./slide-thumbnail/slide-thumbnail";
+import { Slide } from "@/types/slide.types";
 
 export function Navigation(p: {
-  slideCodeList: string[];
+  slideList: Slide[];
   currentSlideIndex: number;
   onClickItem: (index: number) => void;
   onClickAdd: () => void;
@@ -11,7 +12,7 @@ export function Navigation(p: {
 }) {
   return (
     <div className="w-44 overflow-y-auto h-[calc(100vh-2rem)] p-4 flex flex-col gap-2">
-      {p.slideCodeList.map((code, index) => (
+      {p.slideList.map((slide, index) => (
         <div
           className={cx(
             "hover:ring-2 hover:ring-indigo-500 rounded-sm",
@@ -20,7 +21,7 @@ export function Navigation(p: {
           key={index}
         >
           <SlideThumbnail
-            code={p.slideCodeList[index]}
+            code={slide.code}
             onClick={() => p.onClickItem(index)}
             onClickTrash={() => {
               p.onClickDelete(index);

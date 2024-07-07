@@ -6,31 +6,31 @@ import { SlidePreview } from "@/features/slide-preview/slide-preview";
 import { cx } from "class-variance-authority";
 import { useEffect, useState } from "react";
 import { INITIAL_SLIDES } from "./constant";
-
+import { Slide } from "@/types/slide.types";
 export function Home() {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
-  const [slideCodeList, setSlideCodeList] = useState<string[]>(INITIAL_SLIDES);
+  const [slideList, setSlideList] = useState<Slide[]>(INITIAL_SLIDES);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const currentSlideCode = slideCodeList[currentSlideIndex];
+  const currentSlide = slideList[currentSlideIndex];
 
-  const updateCurrentSlideCode = (value: string) => {
-    const newSlideCodeList = [...slideCodeList];
-    newSlideCodeList[currentSlideIndex] = value;
-    setSlideCodeList(newSlideCodeList);
+  const updateCurrentSlideCode = (code: string) => {
+    const newSlideList = [...slideList];
+    newSlideList[currentSlideIndex].code = code;
+    setSlideList(newSlideList);
+  };
+  const updateCurrentSlideFilename = (filename: string) => {
+    const newSlideList = [...slideList];
+    newSlideList[currentSlideIndex].fileName = filename;
+    setSlideList(newSlideList);
   };
   const addSlide = () => {
-    console.log("***add");
-    setSlideCodeList([
-      ...slideCodeList,
-      slideCodeList[slideCodeList.length - 1],
-    ]);
-    setCurrentSlideIndex(slideCodeList.length);
+    setSlideList([...slideList, slideList[slideList.length - 1]]);
+    setCurrentSlideIndex(slideList.length);
   };
   const deleteSlide = (index: number) => {
-    console.log("***deleting ", index);
-    const newSlideCodeList = [...slideCodeList];
-    newSlideCodeList.splice(index, 1);
-    setSlideCodeList(newSlideCodeList);
+    const newSlideList = [...slideList];
+    newSlideList.splice(index, 1);
+    setSlideList(newSlideList);
     setCurrentSlideIndex((i) =>
       currentSlideIndex == index && index > 1 ? 0 : i - 1
     );
@@ -49,7 +49,7 @@ export function Home() {
       if (isPreviewMode) {
         if (
           event.key === "ArrowRight" &&
-          currentSlideIndex < slideCodeList.length - 1
+          currentSlideIndex < slideList.length - 1
         ) {
           goToNextSlide();
         } else if (event.key === "ArrowLeft" && currentSlideIndex > 0) {
@@ -102,7 +102,7 @@ export function Home() {
     <div className="flex gap-2">
       <div className={cx(!isPreviewMode ? "visible" : "invisible")}>
         <Navigation
-          slideCodeList={slideCodeList}
+          slideList={slideList}
           currentSlideIndex={currentSlideIndex}
           onClickItem={(index) => {
             console.log("navigation click cause a set index");
@@ -116,19 +116,23 @@ export function Home() {
         <div
           className={`h-full w-full gap-12 pt-12 overflow-y-hidde flex-center`}
         >
-          <SlideLayout isPreviewMode={isPreviewMode}>
+          <SlideLayout
+            isPreviewMode={isPreviewMode}
+            slide={currentSlide}
+            onChangeFilename={updateCurrentSlideFilename}
+          >
             {isPreviewMode ? (
-              <SlidePreview code={currentSlideCode} />
+              <SlidePreview slide={currentSlide} />
             ) : (
               <SlideInput
-                code={currentSlideCode}
-                onChange={updateCurrentSlideCode}
+                slide={currentSlide}
+                onCodeChange={updateCurrentSlideCode}
               />
             )}
           </SlideLayout>
         </div>
       </div>
-      {slideCodeList.length > 0 && buttonMode}
+      {slideList.length > 0 && buttonMode}
     </div>
   );
   return isPreviewMode

@@ -2,16 +2,17 @@ import { javascript } from "@codemirror/lang-javascript";
 import { tokyoNight } from "@uiw/codemirror-theme-tokyo-night";
 import CodeMirror from "@uiw/react-codemirror";
 import "./slide-input.css";
+import { Slide } from "@/types/slide.types";
 
 export function SlideInput(p: {
-  code: string;
+  slide: Slide;
   style?: React.CSSProperties;
-  onChange: (value: string) => void;
+  onCodeChange: (code: string) => void;
 }) {
   return (
     <div className="p-2">
       <CodeMirror
-        value={p.code}
+        value={p.slide.code}
         style={{
           fontSize: "1.2rem",
           margin: "5px",
@@ -24,7 +25,7 @@ export function SlideInput(p: {
         maxHeight="860px"
         extensions={[javascript({ jsx: true, typescript: true })]}
         onChange={(value, viewUpdate) => {
-          p.onChange(value);
+          p.onCodeChange(value);
         }}
       />
     </div>

@@ -1,3 +1,4 @@
+import { Slide } from "@/types/slide.types";
 import { useEffect, useState } from "react";
 import {
   BundledTheme,
@@ -8,7 +9,7 @@ import "shiki-magic-move/dist/style.css";
 import { ShikiMagicMove } from "shiki-magic-move/react";
 const CODE_THEME: BundledTheme = "tokyo-night";
 
-export function SlidePreview({ code = "" }: { code: string }) {
+export function SlidePreview(p: { slide: Slide }) {
   const [highlighter, setHighlighter] = useState<HighlighterCore>();
 
   const renderAnimatedCode = () => {
@@ -18,7 +19,7 @@ export function SlidePreview({ code = "" }: { code: string }) {
           lang="ts"
           theme={CODE_THEME}
           highlighter={highlighter!}
-          code={code}
+          code={p.slide.code || ""}
           options={{
             duration: 800,
             stagger: 0.3,
