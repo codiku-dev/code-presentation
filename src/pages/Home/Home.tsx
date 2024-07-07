@@ -9,80 +9,48 @@ import { useEffect, useState } from "react";
 export function Home() {
   const [isPreviewShown, setisPreviewShown] = useState(false);
   const [slideCodeList, setSlideCodeList] = useState<string[]>([
-    `let welcome = "Hello"`,
-    `let welcome = "Hello"
-function addWorld(){
-
-}`,
-    `let welcome = "Hello"
-function addWorld(){
-  console.log(welcome)
-}`,
-    `let welcome = "Hello"
-function addWorld(){
-  welcome+" World !"
-  console.log(welcome)
-}`,
-    `let welcome = "Hello"
-function addWorld(){
-  welcome+" World !"
-  console.log(welcome)
-}
-let welcome = "Hello"
-function addWorld(){
-  welcome+" World !"
-  console.log(welcome)
-}
-let welcome = "Hello"
-function addWorld(){
-  welcome+" World !"
-  console.log(welcome)
-}
-let welcome = "Hello"
-function addWorld(){
-  welcome+" World !"
-  console.log(welcome)
-}
-let welcome = "Hello"
-function addWorld(){
-  welcome+" World !"
-  console.log(welcome)
-}
-let welcome = "Hello"
-function addWorld(){
-  welcome+" World !"
-  console.log(welcome)
-}
-let welcome = "Hello"
-function addWorld(){
-  welcome+" World !"
-  console.log(welcome)
-}
-let welcome = "Hello"
-function addWorld(){
-  welcome+" World !"
-  console.log(welcome)
-}
-let welcome = "Hello"
-function addWorld(){
-  welcome+" World !"
-  console.log(welcome)
-}
-let welcome = "Hello"
-function addWorld(){
-  welcome+" World !"
-  console.log(welcome)
-}
-let welcome = "Hello"
-function addWorld(){
-  welcome+" World !"
-  console.log(welcome)
-}
-let welcome = "Hello"
-function addWorld(){
-  welcome+" World !"
-  console.log(welcome)
-}`,
+    `<script>
+    import { defineComponent } from 'vue'
+    
+    export default defineComponent({
+      data: () => ({
+        count: 1
+      }),
+      computed: {
+        double() {
+          return this.count * 2
+        }
+      },
+    })
+    </script>
+    
+    <template>
+      <p class="greeting">{{ count }} * 2 = {{ doubled }}</p>
+    </template>
+    
+    <style>
+    .greeting {
+      color: red;
+      font-weight: bold;
+    }
+    </style>`,
+    `<script setup>
+    import { ref, computed } from 'vue'
+    
+    const count = ref(1)
+    const double = computed(() => count.value * 2)
+    </script>
+    
+    <template>
+      <p class="greeting">{{ count }} = {{ doubled / 2 }}</p>
+    </template>
+    
+    <style>
+    .greeting {
+      color: red;
+      font-weight: bold;
+    }
+    </style>`,
   ]);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const currentSlideCode = slideCodeList[currentSlideIndex];

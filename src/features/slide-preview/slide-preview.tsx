@@ -6,7 +6,7 @@ import {
 } from "shiki";
 import "shiki-magic-move/dist/style.css";
 import { ShikiMagicMove } from "shiki-magic-move/react";
-const CODE_THEME: BundledTheme = "github-dark";
+const CODE_THEME: BundledTheme = "tokyo-night";
 
 export function SlidePreview(p: { code: string }) {
   const [highlighter, setHighlighter] = useState<HighlighterCore>();
@@ -25,7 +25,6 @@ export function SlidePreview(p: { code: string }) {
             lineNumbers: false,
             containerStyle: false,
           }}
-
         />
       </div>
     );
