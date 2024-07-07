@@ -3,43 +3,46 @@ import { Navigation } from "@/features/navigation";
 import { SlideInput } from "@/features/slide-input/slide-input";
 import { SlideLayout } from "@/features/slide-layout";
 import { SlidePreview } from "@/features/slide-preview/slide-preview";
+import { cx } from "class-variance-authority";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 
-const INITIAL_CODE = `const hey = "Edit this code and preview !"`;
 
 export function Home() {
   const [isPreviewShown, setisPreviewShown] = useState(false);
-  const [code, setCode] = useState(INITIAL_CODE);
-
+  const [slideCodeList, setSlideCodeList] = useState<string[]>([`const hey = "Edit this code and preview !"`, `const hello = "world yo!"` ]);
+  const [currentSlideIndex,setCurrentSlideIndex] = useState(0);
+  const currentSlideCode = slideCodeList[currentSlideIndex];
   return (
     <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
       <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,#d5c5ff,transparent)]">
         <div className="flex gap-2">
-          <Navigation />
+          <Navigation  slideCodeList={slideCodeList} currentSlideIndex={currentSlideIndex}/>
           <div className=" p-2 w-full  mt-6 flex-center">
             <div className={`flex w-full flex-center  gap-12 `}>
-              {isPreviewShown && (
+              {isPreviewShown &&(
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => setCode(INITIAL_CODE)}
+                  onClick={() => setCurrentSlideIndex(currentSlideIndex - 1)}
+                  className={cx(currentSlideIndex === 0 && "invisible")}
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
               )}
               <SlideLayout>
                 {isPreviewShown ? (
-                  <SlidePreview code={code} />
+                  <SlidePreview code={currentSlideCode} />
                 ) : (
-                  <SlideInput code={code} />
+                  <SlideInput code={currentSlideCode} />
                 )}
               </SlideLayout>
               {isPreviewShown && (
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => setCode(`const hello = "world yo!"`)}
+                  className={cx(currentSlideIndex === slideCodeList.length - 1 && "invisible")}
+                  onClick={() => setCurrentSlideIndex(currentSlideIndex + 1)}
                 >
                   <ChevronRight className="h-4 w-4" />
                 </Button>
