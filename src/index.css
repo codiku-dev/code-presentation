@@ -54,3 +54,13 @@
     @apply flex justify-center items-center;
   }
 }
+
+
+#root{
+  height: 100%
+}
+body{
+  height: 100vh;
+}
+
+

@@ -7,7 +7,7 @@ export function SlideThumbnail(p: { code: string, onClick: () => void }) {
     <div className="rounded-sm h-20 bg-black" onClick={p.onClick}>
       <div className="p-2">
         <CodeMirror
-          value={p.code}
+          value={p.code.substring(0, 240)}
           style={{
             fontSize: "0.2rem",
             userSelect: "none"

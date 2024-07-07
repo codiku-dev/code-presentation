@@ -25,7 +25,7 @@ export function SlidePreview(p: { code: string }) {
             lineNumbers: false,
             containerStyle: false,
           }}
-          className="text-2xl"
+
         />
       </div>
     );
