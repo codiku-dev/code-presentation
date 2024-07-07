@@ -7,6 +7,7 @@ export function Navigation(p: {
   currentSlideIndex: number;
   onClickItem: (index: number) => void;
   onClickAdd: () => void;
+  onClickDelete: (index: number) => void;
 }) {
   return (
     <div className="w-44 overflow-y-auto h-[calc(100vh-2rem)] p-4 flex flex-col gap-2">
@@ -21,6 +22,10 @@ export function Navigation(p: {
           <SlideThumbnail
             code={p.slideCodeList[index]}
             onClick={() => p.onClickItem(index)}
+            onClickTrash={(e) => {
+              e.stopPropagation();
+              p.onClickDelete(index);
+            }}
           />
         </div>
       ))}

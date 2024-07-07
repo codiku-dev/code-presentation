@@ -21,7 +21,7 @@ export function SlideInput(p: {
         basicSetup={{
           lineNumbers: true,
         }}
-        maxHeight="600px"
+        maxHeight="860px"
         extensions={[javascript({ jsx: true, typescript: true })]}
         onChange={(value, viewUpdate) => {
           p.onChange(value);

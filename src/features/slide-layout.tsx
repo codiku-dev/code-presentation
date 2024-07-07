@@ -6,7 +6,7 @@ export function SlideLayout(p: {
   isPreviewMode: boolean;
 }) {
   const header = (
-    <div className="relative flex">
+    <div className="relative flex ">
       <div className="absolute left-1/2 transform -translate-x-1/2 text-xs text-gray-500">
         code.tsx
       </div>
@@ -20,7 +20,7 @@ export function SlideLayout(p: {
   return (
     <div
       className={cx(
-        "   min-h-[600px] bg-primary rounded-md  border-4 border-secondary p-4 text-white",
+        "   min-h-[90%] bg-primary rounded-md  border-4 border-secondary p-4 text-white ",
         p.isPreviewMode
           ? "min-w-[1200px] max-h-[930px] overflow-y-auto"
           : "max-h-[950px] min-w-[930px] max-w-[1200px] "
