@@ -21,7 +21,6 @@ export function SlideInput(p: {
           parser: "typescript",
           plugins: [tsParser],
         });
-        console.log("format code ", formattedCode);
         p.onCodeChange(formattedCode);
       }
     };

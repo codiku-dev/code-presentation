@@ -21,7 +21,7 @@ export function Navigation(p: {
           key={index}
         >
           <SlideThumbnail
-            code={slide.code}
+            code={slide?.code || ""}
             onClick={() => p.onClickItem(index)}
             onClickTrash={() => {
               p.onClickDelete(index);

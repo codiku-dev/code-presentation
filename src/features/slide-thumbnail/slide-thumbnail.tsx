@@ -35,7 +35,6 @@ export function SlideThumbnail(p: {
             }}
             extensions={[javascript({ jsx: true, typescript: true })]}
             onChange={(value, viewUpdate) => {
-              console.log("value:", value);
             }}
           />
         )}

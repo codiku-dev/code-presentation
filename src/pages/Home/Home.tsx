@@ -9,9 +9,13 @@ import { INITIAL_SLIDES } from "./constant";
 import { Slide } from "@/types/slide.types";
 export function Home() {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
-  const [slideList, setSlideList] = useState<Slide[]>(INITIAL_SLIDES);
+  const [slideList, setSlideList] = useState<Slide[]>(INITIAL_SLIDES||JSON.parse(localStorage.getItem("slideList") || "[]"));
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const currentSlide = slideList[currentSlideIndex];
+
+  useEffect(()=> {
+    localStorage.setItem("slideList", JSON.stringify(slideList))
+  },[slideList])
 
   const updateCurrentSlideCode = (code: string) => {
     const newSlideList = [...slideList];
@@ -24,16 +28,16 @@ export function Home() {
     setSlideList(newSlideList);
   };
   const addSlide = () => {
-    setSlideList([...slideList, slideList[slideList.length - 1]]);
+    setSlideList([...slideList, {fileName: "", code: ""}]);
     setCurrentSlideIndex(slideList.length);
   };
   const deleteSlide = (index: number) => {
     const newSlideList = [...slideList];
     newSlideList.splice(index, 1);
+    if(newSlideList.length>0 && currentSlideIndex>0){
+      setCurrentSlideIndex(curr => curr-1)
+    }
     setSlideList(newSlideList);
-    setCurrentSlideIndex((i) =>
-      currentSlideIndex == index && index > 1 ? 0 : i - 1
-    );
   };
 
   const goToPreviousSlide = () => {
@@ -98,6 +102,7 @@ export function Home() {
     </Button>
   );
 
+
   const content = (
     <div className="flex gap-2">
       <div className={cx(!isPreviewMode ? "visible" : "invisible")}>
@@ -105,7 +110,6 @@ export function Home() {
           slideList={slideList}
           currentSlideIndex={currentSlideIndex}
           onClickItem={(index) => {
-            console.log("navigation click cause a set index");
             setCurrentSlideIndex(index);
           }}
           onClickAdd={addSlide}
@@ -116,7 +120,7 @@ export function Home() {
         <div
           className={`h-full w-full gap-12 pt-12 overflow-y-hidde flex-center`}
         >
-          <SlideLayout
+          {currentSlide &&<SlideLayout
             isPreviewMode={isPreviewMode}
             slide={currentSlide}
             onChangeFilename={updateCurrentSlideFilename}
@@ -129,7 +133,7 @@ export function Home() {
                 onCodeChange={updateCurrentSlideCode}
               />
             )}
-          </SlideLayout>
+          </SlideLayout>}
         </div>
       </div>
       {slideList.length > 0 && buttonMode}
