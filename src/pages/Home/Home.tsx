@@ -6,16 +6,19 @@ import { SlidePreview } from "@/features/slide-preview/slide-preview";
 import { cx } from "class-variance-authority";
 import { useEffect, useState } from "react";
 
-
 export function Home() {
   const [isPreviewShown, setisPreviewShown] = useState(false);
-  const [slideCodeList, setSlideCodeList] = useState<string[]>([`let welcome = "Hello"`, `let welcome = "Hello"
+  const [slideCodeList, setSlideCodeList] = useState<string[]>([
+    `let welcome = "Hello"`,
+    `let welcome = "Hello"
 function addWorld(){
 
-}`, `let welcome = "Hello"
+}`,
+    `let welcome = "Hello"
 function addWorld(){
   console.log(welcome)
-}`, `let welcome = "Hello"
+}`,
+    `let welcome = "Hello"
 function addWorld(){
   welcome+" World !"
   console.log(welcome)
@@ -79,7 +82,8 @@ let welcome = "Hello"
 function addWorld(){
   welcome+" World !"
   console.log(welcome)
-}`]);
+}`,
+  ]);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const currentSlideCode = slideCodeList[currentSlideIndex];
 
@@ -87,36 +91,42 @@ function addWorld(){
     const newSlideCodeList = [...slideCodeList];
     newSlideCodeList[currentSlideIndex] = value;
     setSlideCodeList(newSlideCodeList);
-  }
+  };
   const addSlide = () => {
-    setSlideCodeList([...slideCodeList, slideCodeList[slideCodeList.length - 1]]);
+    setSlideCodeList([
+      ...slideCodeList,
+      slideCodeList[slideCodeList.length - 1],
+    ]);
     setCurrentSlideIndex(slideCodeList.length);
-  }
+  };
 
   const goToPreviousSlide = () => {
     setCurrentSlideIndex(currentSlideIndex - 1);
-  }
+  };
 
   const goToNextSlide = () => {
     setCurrentSlideIndex(currentSlideIndex + 1);
-  }
+  };
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (isPreviewShown) {
-        if (event.key === 'ArrowRight' && currentSlideIndex < slideCodeList.length - 1) {
+        if (
+          event.key === "ArrowRight" &&
+          currentSlideIndex < slideCodeList.length - 1
+        ) {
           goToNextSlide();
-        } else if (event.key === 'ArrowLeft' && currentSlideIndex > 0) {
+        } else if (event.key === "ArrowLeft" && currentSlideIndex > 0) {
           goToPreviousSlide();
         }
-      };
-    }
+      }
+    };
 
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    }
-  }, [isPreviewShown, currentSlideIndex])
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isPreviewShown, currentSlideIndex]);
 
   const backgroundEdit = (children: React.ReactNode) => {
     return (
@@ -125,22 +135,32 @@ function addWorld(){
           {children}
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   const backgroundPreview = (children: React.ReactNode) => {
     return (
       <div className=" z-[-2] w-screen h-full bg-neutral-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]">
         {children}
       </div>
-    )
-  }
+    );
+  };
 
-  const content = <div className="flex gap-2">
-    <div className={cx(!isPreviewShown ? "visible" : "invisible")}><Navigation slideCodeList={slideCodeList} currentSlideIndex={currentSlideIndex} onClickItem={(index) => setCurrentSlideIndex(index)} onClickAdd={addSlide} /></div>
-    <div className="w-full flex justify-center ">
-      <div className={`h-full gap-12 pt-12 overflow-y-hidden`}>
-        {/* {isPreviewShown && (
+  const content = (
+    <div className="flex gap-2">
+      <div className={cx(!isPreviewShown ? "visible" : "invisible")}>
+        <Navigation
+          slideCodeList={slideCodeList}
+          currentSlideIndex={currentSlideIndex}
+          onClickItem={(index) => setCurrentSlideIndex(index)}
+          onClickAdd={addSlide}
+        />
+      </div>
+      <div className="w-full flex justify-center ">
+        <div
+          className={`h-full w-full gap-12 pt-12 overflow-y-hidde flex-center`}
+        >
+          {/* {isPreviewShown && (
           <Button
             variant="outline"
             size="icon"
@@ -150,14 +170,17 @@ function addWorld(){
             <ChevronLeft className="h-4 w-4 text-gray-400 hover:text-white" />
           </Button>
         )} */}
-        <SlideLayout isPreviewMode={isPreviewShown}>
-          {isPreviewShown ? (
-            <SlidePreview code={currentSlideCode} />
-          ) : (
-            <SlideInput code={currentSlideCode} onChange={updateCurrentSlideCode} />
-          )}
-        </SlideLayout>
-        {/* {isPreviewShown && (
+          <SlideLayout isPreviewMode={isPreviewShown}>
+            {isPreviewShown ? (
+              <SlidePreview code={currentSlideCode} />
+            ) : (
+              <SlideInput
+                code={currentSlideCode}
+                onChange={updateCurrentSlideCode}
+              />
+            )}
+          </SlideLayout>
+          {/* {isPreviewShown && (
           <Button
 
             variant="outline"
@@ -168,19 +191,15 @@ function addWorld(){
             <ChevronRight className="h-4 w-4 text-gray-400 hover:text-white" />
           </Button>
         )} */}
+        </div>
       </div>
+      <Button
+        className="absolute w-44 right-4 top-4"
+        onClick={() => setisPreviewShown(!isPreviewShown)}
+      >
+        {isPreviewShown ? "Go to edit" : "Go to preview"}
+      </Button>
     </div>
-    <Button
-      className="absolute w-44 right-4 top-4"
-      onClick={() => setisPreviewShown(!isPreviewShown)}
-    >
-      {isPreviewShown ? "Go to edit" : "Go to preview"}
-    </Button>
-  </div>
-  return (
-
-    isPreviewShown ?
-      backgroundPreview(content) :
-      backgroundEdit(content)
   );
+  return isPreviewShown ? backgroundPreview(content) : backgroundEdit(content);
 }
