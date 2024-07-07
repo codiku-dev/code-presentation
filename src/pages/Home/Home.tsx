@@ -12,9 +12,8 @@ export function Home() {
   const [slideCodeList, setSlideCodeList] = useState<string[]>(INITIAL_SLIDES);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const currentSlideCode = slideCodeList[currentSlideIndex];
-  console.log("slide index ", currentSlideIndex);
+
   const updateCurrentSlideCode = (value: string) => {
-    console.log("***updateCurrentSlideCode^date");
     const newSlideCodeList = [...slideCodeList];
     newSlideCodeList[currentSlideIndex] = value;
     setSlideCodeList(newSlideCodeList);
@@ -38,12 +37,10 @@ export function Home() {
   };
 
   const goToPreviousSlide = () => {
-    console.log("***previous");
     setCurrentSlideIndex(currentSlideIndex - 1);
   };
 
   const goToNextSlide = () => {
-    console.log("***next");
     setCurrentSlideIndex(currentSlideIndex + 1);
   };
 

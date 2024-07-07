@@ -22,8 +22,7 @@ export function Navigation(p: {
           <SlideThumbnail
             code={p.slideCodeList[index]}
             onClick={() => p.onClickItem(index)}
-            onClickTrash={(e) => {
-              e.stopPropagation();
+            onClickTrash={() => {
               p.onClickDelete(index);
             }}
           />

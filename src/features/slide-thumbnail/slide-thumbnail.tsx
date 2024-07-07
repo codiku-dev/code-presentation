@@ -15,7 +15,10 @@ export function SlideThumbnail(p: {
           <Trash
             className=" w-6 self-end text-white     rounded-full   cursor-pointer"
             size={16}
-            onClick={p.onClickTrash}
+            onClick={(e) => {
+              e.stopPropagation();
+              p.onClickTrash();
+            }}
           />
         </div>
         {p.code && (
