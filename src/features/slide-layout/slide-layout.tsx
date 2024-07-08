@@ -3,6 +3,7 @@ import { PickableImage, Slide } from "@/types/slide.types";
 import { cx } from "class-variance-authority";
 import { Minus, Square, X } from "lucide-react";
 import { useDroppable } from "@dnd-kit/core";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 export function SlideLayout(p: {
   children: React.ReactNode;
@@ -26,7 +27,7 @@ export function SlideLayout(p: {
             p.onRightClickPickableImage(image);
           }}
           key={index}
-          className="absolute"
+          className={cx("absolute")}
           style={{
             top: `${image.y}px`,
             left: `${image.x}px`,
