@@ -2,7 +2,7 @@ import { PickableImage } from "@/types/slide.types";
 import { cx } from "class-variance-authority";
 import { useDraggable } from "@dnd-kit/core";
 
-const PICKABLE_IMAGES: { filePath: string }[] = [
+export const PICKABLE_IMAGES: { filePath: string }[] = [
   { filePath: "../../assets/point_left.png" },
   { filePath: "../../assets/point_up.png" },
 ];
@@ -13,7 +13,7 @@ export function PickableImageList(p: { selectedImage?: PickableImage }) {
     setNodeRef: setNodeRef1,
     transform: transform1,
   } = useDraggable({
-    id: PICKABLE_IMAGES[0].filePath,
+    id: new URL(PICKABLE_IMAGES[0].filePath, import.meta.url).href,
   });
   const {
     attributes: attributes2,
@@ -21,7 +21,7 @@ export function PickableImageList(p: { selectedImage?: PickableImage }) {
     setNodeRef: setNodeRef2,
     transform: transform2,
   } = useDraggable({
-    id: PICKABLE_IMAGES[1].filePath,
+    id: new URL(PICKABLE_IMAGES[1].filePath, import.meta.url).href,
   });
 
   const style1 = transform1

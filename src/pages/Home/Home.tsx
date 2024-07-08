@@ -11,7 +11,7 @@ import { PickableImageList } from "@/features/pickable-image-list/pickable-image
 import { DndContext } from "@dnd-kit/core";
 import { v4 as uuidv4 } from "uuid";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-
+import { PICKABLE_IMAGES } from "@/features/pickable-image-list/pickable-image-list";
 export function Home() {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [slideList, setSlideList] = useState<Slide[]>(
@@ -120,11 +120,11 @@ export function Home() {
             onDragEnd={(event) => {
               console.log("id  is", event.active.id);
               const shiftPerImage = {
-                "../../assets/point_left.png": {
+                [new URL(PICKABLE_IMAGES[0].filePath, import.meta.url).href]: {
                   x: -367,
                   y: 40,
                 },
-                "../../assets/point_up.png": {
+                [new URL(PICKABLE_IMAGES[1].filePath, import.meta.url).href]: {
                   x: -366,
                   y: 136,
                 },
