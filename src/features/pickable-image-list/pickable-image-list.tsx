@@ -39,14 +39,14 @@ export function PickableImageList(p: { selectedImage?: PickableImage }) {
     : undefined;
 
   return (
-    <div className="flex flex-col bg-primaryrounded-md ">
+    <div className="rounded-md">
       <div
         ref={setNodeRef1}
         style={style1}
         {...listeners1}
         {...attributes1}
         key={PICKABLE_IMAGES[0].filePath}
-        className={cx(" cursor-pointer  ")}
+        className={cx(" cursor-pointer  hover:bg-primary rounded-md")}
       >
         <img src={PICKABLE_IMAGES[0].filePath} width={100} height={100} />
       </div>
@@ -57,7 +57,7 @@ export function PickableImageList(p: { selectedImage?: PickableImage }) {
         {...attributes2}
         key={PICKABLE_IMAGES[1].filePath}
         onClick={() => {}}
-        className={cx(" cursor-pointer  ")}
+        className={cx(" cursor-pointer hover:bg-primary rounded-md  ")}
       >
         <img src={PICKABLE_IMAGES[1].filePath} width={100} height={100} />
       </div>

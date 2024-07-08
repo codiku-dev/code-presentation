@@ -72,7 +72,10 @@ export function SlideLayout(p: {
       {header}
       <div
         ref={setNodeRef}
-        className={cx("h-full", isOver ? "bg-green-900" : "")}
+        className={cx(
+          "h-[870px] overflow-y-hidden",
+          isOver ? "bg-green-900" : ""
+        )}
       >
         {p.children}
         {renderDroppedImageList()}

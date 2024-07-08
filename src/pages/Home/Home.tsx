@@ -216,15 +216,15 @@ export function Home() {
         </div>
       </div>
       {slideList.length > 0 && buttonMode}
-      <div className="absolute top-[10%] right-1 w-24 bg-black/5  group rounded-sm">
-        <div className="-right-44 relative bg-black group-hover:-translate-x-44 transition transform rounded-sm">
+      <div className="absolute top-[10%] right-1 w-24 bg-black/5  group rounded-sm  ">
+        <div className=" opacity-0 rounded-sm group-hover:visible group-hover:opacity-100">
           {!isPreviewMode && <PickableImageList />}
         </div>
       </div>
     </div>
   );
   return (
-    <div className="w-screen h-full p-4">
+    <div className="w-screen h-full">
       {isPreviewMode
         ? renderWithBackgroundDark(content)
         : renderWithBackgroundLight(content)}
