@@ -3,7 +3,6 @@ import { PickableImage, Slide } from "@/types/slide.types";
 import { cx } from "class-variance-authority";
 import { Minus, Square, X } from "lucide-react";
 import { useDroppable } from "@dnd-kit/core";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 export function SlideLayout(p: {
   children: React.ReactNode;
@@ -17,7 +16,6 @@ export function SlideLayout(p: {
   const { isOver, setNodeRef } = useDroppable({
     id: "droppable",
   });
-
   const renderDroppedImageList = () => {
     return p.slide.imageList.map((image, index) => {
       return (
@@ -33,7 +31,11 @@ export function SlideLayout(p: {
             left: `${image.x}px`,
           }}
         >
-          <img src={image.filePath} height={100} width={100} />
+          <img
+            src={new URL(image.filePath, import.meta.url).href}
+            height={100}
+            width={100}
+          />
         </div>
       );
     });

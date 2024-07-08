@@ -3,10 +3,8 @@ import { cx } from "class-variance-authority";
 import { useDraggable } from "@dnd-kit/core";
 
 const PICKABLE_IMAGES: { filePath: string }[] = [
-  { filePath: "/public/point_left.png" },
-  { filePath: "/public/point_up.png" },
-  { filePath: "/public/point_right.png" },
-  { filePath: "/public/point_down.png" },
+  { filePath: "../../assets/point_left.png" },
+  { filePath: "../../assets/point_up.png" },
 ];
 export function PickableImageList(p: { selectedImage?: PickableImage }) {
   const {
@@ -48,7 +46,11 @@ export function PickableImageList(p: { selectedImage?: PickableImage }) {
         key={PICKABLE_IMAGES[0].filePath}
         className={cx(" cursor-pointer  hover:bg-primary rounded-md")}
       >
-        <img src={PICKABLE_IMAGES[0].filePath} width={100} height={100} />
+        <img
+          src={new URL(PICKABLE_IMAGES[0].filePath, import.meta.url).href}
+          width={100}
+          height={100}
+        />
       </div>
       <div
         ref={setNodeRef2}
@@ -59,7 +61,11 @@ export function PickableImageList(p: { selectedImage?: PickableImage }) {
         onClick={() => {}}
         className={cx(" cursor-pointer hover:bg-primary rounded-md  ")}
       >
-        <img src={PICKABLE_IMAGES[1].filePath} width={100} height={100} />
+        <img
+          src={new URL(PICKABLE_IMAGES[1].filePath, import.meta.url).href}
+          width={100}
+          height={100}
+        />
       </div>
     </div>
   );

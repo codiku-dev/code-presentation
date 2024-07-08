@@ -118,12 +118,13 @@ export function Home() {
           <DndContext
             modifiers={[restrictToWindowEdges]}
             onDragEnd={(event) => {
+              console.log("id  is", event.active.id);
               const shiftPerImage = {
-                "/public/point_left.png": {
+                "../../assets/point_left.png": {
                   x: -367,
                   y: 40,
                 },
-                "/public/point_up.png": {
+                "../../assets/point_up.png": {
                   x: -366,
                   y: 136,
                 },
@@ -200,6 +201,7 @@ export function Home() {
               onPickLocationForImage={(image) => {
                 const newSlideList = [...slideList];
                 newSlideList[currentSlideIndex].imageList.push(image);
+                console.log(newSlideList[currentSlideIndex]);
                 setSlideList(newSlideList);
               }}
             >
