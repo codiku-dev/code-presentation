@@ -118,29 +118,37 @@ export function Home() {
           <DndContext
             modifiers={[restrictToWindowEdges]}
             onDragEnd={(event) => {
-              console.log("id  is", event.active.id);
-              const shiftPerImage = {
-                [new URL(PICKABLE_IMAGES[0].filePath, import.meta.url).href]: {
-                  x: -367,
-                  y: 40,
-                },
-                [new URL(PICKABLE_IMAGES[1].filePath, import.meta.url).href]: {
-                  x: -366,
-                  y: 136,
-                },
-              };
-              const shift =
-                shiftPerImage[
-                  event.active.id.toString() as keyof typeof shiftPerImage
-                ];
+              // const shiftPerImage = {
+              //   [new URL(PICKABLE_IMAGES[0].filePath, import.meta.url).href]: {
+              //     x: -367,
+              //     y: 40,
+              //   },
+              //   [new URL(PICKABLE_IMAGES[1].filePath, import.meta.url).href]: {
+              //     x: -366,
+              //     y: 136,
+              //   },
+              // };
+              // const shift =
+              //   shiftPerImage[
+              //     event.active.id.toString() as keyof typeof shiftPerImage
+              //   ];
+
+              const xFromBorderRight =
+                Number(event.active.rect.current.translated?.right) -
+                Number(event.active.rect.current.initial?.right);
+
+              const yFromBorderTop =
+                Number(event.active.rect.current.translated?.top) -
+                Number(event.active.rect.current.initial?.top);
 
               updateCurrentSlideImageList([
                 ...currentSlide.imageList,
                 {
                   id: uuidv4(),
                   filePath: event.active.id.toString(),
-                  x: event.delta.x + window.innerWidth + shift.x,
-                  y: event.delta.y + shift.y,
+                  x: window.innerWidth + xFromBorderRight - 380,
+
+                  y: yFromBorderTop + 115,
                 },
               ]);
             }}
@@ -218,7 +226,7 @@ export function Home() {
         </div>
       </div>
       {slideList.length > 0 && buttonMode}
-      <div className="absolute top-[10%] right-1 w-24 bg-black/5  group rounded-sm  ">
+      <div className="fixed top-44 right-5 w-24 bg-black/5  group rounded-sm  ">
         <div className=" opacity-0 rounded-sm group-hover:visible group-hover:opacity-100">
           {!isPreviewMode && <PickableImageList />}
         </div>
