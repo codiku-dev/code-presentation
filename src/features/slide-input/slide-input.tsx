@@ -14,7 +14,7 @@ export function SlideInput(p: {
 }) {
   useEffect(() => {
     const handleKeyDown = async (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === "s") {
+      if ((event.ctrlKey || event.metaKey) && event.key === "s") {
         event.preventDefault();
         const formattedCode = await prettier.format(p.slide.code, {
           semi: false,
@@ -36,13 +36,14 @@ export function SlideInput(p: {
       <CodeMirror
         value={p.slide.code}
         style={{
-          fontSize: "1.2rem",
+          fontSize: "1rem",
           margin: "5px",
           ...p.style,
         }}
         theme={tokyoNight}
         basicSetup={{
-          lineNumbers: true,
+          lineNumbers: false,
+          foldGutter: false,
         }}
         maxHeight="860px"
         extensions={[javascript({ jsx: true, typescript: true })]}

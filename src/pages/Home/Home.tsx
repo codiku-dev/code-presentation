@@ -1,24 +1,29 @@
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/features/navigation";
 import { SlideInput } from "@/features/slide-input/slide-input";
-import { SlideLayout } from "@/features/slide-layout";
+import { SlideLayout } from "@/features/slide-layout/slide-layout";
 import { SlidePreview } from "@/features/slide-preview/slide-preview";
 import { cx } from "class-variance-authority";
 import { useEffect, useState } from "react";
 import { INITIAL_SLIDES } from "./constant";
-import {  Slide } from "@/types/slide.types";
-import { EmojiList } from "@/features/emoji-list/emoji-list";
-export function Home() {
+import { PickableImage, Slide } from "@/types/slide.types";
+import { PickableImageList } from "@/features/pickable-image-list/pickable-image-list";
+import { DndContext } from "@dnd-kit/core";
+import { v4 as uuidv4 } from "uuid";
 
+export function Home() {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
-  const [slideList, setSlideList] = useState<Slide[]>(INITIAL_SLIDES||JSON.parse(localStorage.getItem("slideList") || "[]"));
+  const [slideList, setSlideList] = useState<Slide[]>(
+    JSON.parse(
+      localStorage.getItem("slideList") || JSON.stringify(INITIAL_SLIDES)
+    )
+  );
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const currentSlide = slideList[currentSlideIndex];
-  const [selectedEmoji, setSelectedEmoji] = useState<{name: string, emoji: string}>({name: "", emoji: ""});
 
-  useEffect(()=> {
-    localStorage.setItem("slideList", JSON.stringify(slideList))
-  },[slideList])
+  useEffect(() => {
+    localStorage.setItem("slideList", JSON.stringify(slideList));
+  }, [slideList]);
 
   const updateCurrentSlideCode = (code: string) => {
     const newSlideList = [...slideList];
@@ -30,19 +35,51 @@ export function Home() {
     newSlideList[currentSlideIndex].fileName = filename;
     setSlideList(newSlideList);
   };
+
+  const updateCurrentSlideImageList = (imageList: PickableImage[]) => {
+    const newSlideList = [...slideList];
+    newSlideList[currentSlideIndex].imageList = imageList;
+    setSlideList(newSlideList);
+  };
   const addSlide = () => {
-    setSlideList([...slideList, {fileName: "", code: "", emojiList: []}]);
-    setCurrentSlideIndex(slideList.length);
+    if (slideList.length === 0) {
+      setSlideList([{ fileName: "", code: "", imageList: [] }]);
+      setCurrentSlideIndex(0);
+    } else {
+      // When creating a new slide we add a copy of the previous ( if there is a previous, but we don't want to keep the same id for the images )
+      setSlideList([
+        ...slideList,
+        {
+          ...slideList[slideList.length - 1],
+          imageList: [
+            ...slideList[slideList.length - 1].imageList.map((image) => {
+              return {
+                ...image,
+                id: uuidv4(),
+              };
+            }),
+          ],
+        },
+      ]);
+      setCurrentSlideIndex(slideList.length);
+    }
   };
   const deleteSlide = (index: number) => {
     const newSlideList = [...slideList];
     newSlideList.splice(index, 1);
-    if(newSlideList.length>0 && currentSlideIndex>0){
-      setCurrentSlideIndex(curr => curr-1)
+    if (newSlideList.length > 0 && currentSlideIndex > 0) {
+      setCurrentSlideIndex((curr) => curr - 1);
     }
     setSlideList(newSlideList);
   };
 
+  const deleteImageFromCurrentSlide = (image: PickableImage) => {
+    const newSlideList = [...slideList];
+    newSlideList[currentSlideIndex].imageList = newSlideList[
+      currentSlideIndex
+    ].imageList.filter((img) => img.id !== image.id);
+    setSlideList(newSlideList);
+  };
   const goToPreviousSlide = () => {
     setCurrentSlideIndex(currentSlideIndex - 1);
   };
@@ -105,10 +142,9 @@ export function Home() {
     </Button>
   );
 
-
   const content = (
-    <div className="flex gap-2">
-      <div className={cx(!isPreviewMode ? "visible" : "invisible")}>
+    <div className="flex gap-2 h-full">
+      {!isPreviewMode && (
         <Navigation
           slideList={slideList}
           currentSlideIndex={currentSlideIndex}
@@ -118,40 +154,78 @@ export function Home() {
           onClickAdd={addSlide}
           onClickDelete={deleteSlide}
         />
-      </div>
+      )}
+
       <div className="w-full flex justify-center ">
         <div
           className={`h-full w-full gap-12 pt-12 overflow-y-hidde flex-center`}
         >
-          {currentSlide && <SlideLayout
-            isPreviewMode={isPreviewMode}
-            slide={currentSlide}
-            onChangeFilename={updateCurrentSlideFilename}
-            selectedEmoji={selectedEmoji}
-            onPointEmoji={(emoji) => {
-             const newSlideList = [...slideList];
-             newSlideList[currentSlideIndex].emojiList.push(emoji);
-             setSlideList(newSlideList);
-            }}
-          >
-            {isPreviewMode ? (
-              <SlidePreview slide={currentSlide} />
-            ) : (
-              <SlideInput
-                slide={currentSlide}
-                onCodeChange={updateCurrentSlideCode}
-              />
-            )}
-          </SlideLayout>}
+          {currentSlide && (
+            <SlideLayout
+              isPreviewMode={isPreviewMode}
+              slide={currentSlide}
+              onChangeFilename={updateCurrentSlideFilename}
+              onRightClickPickableImage={deleteImageFromCurrentSlide}
+              onPickLocationForImage={(image) => {
+                const newSlideList = [...slideList];
+                newSlideList[currentSlideIndex].imageList.push(image);
+                setSlideList(newSlideList);
+              }}
+            >
+              {isPreviewMode ? (
+                <SlidePreview slide={currentSlide} />
+              ) : (
+                <SlideInput
+                  slide={currentSlide}
+                  onCodeChange={updateCurrentSlideCode}
+                />
+              )}
+            </SlideLayout>
+          )}
         </div>
       </div>
       {slideList.length > 0 && buttonMode}
-      <div className="absolute bottom-0 right-0">
-        <EmojiList onSelect={setSelectedEmoji} selectedEmoji={selectedEmoji}/>
+      <div className="absolute top-[10%] right-1 w-24 bg-black/5  group rounded-sm">
+        {/* <div className="-right-44 relative bg-black group-hover:-translate-x-44 transition transform rounded-sm"> */}
+        {!isPreviewMode && <PickableImageList />}
+        {/* </div> */}
       </div>
     </div>
   );
-  return isPreviewMode
-    ? renderWithBackgroundDark(content)
-    : renderWithBackgroundLight(content);
+  return (
+    <div className="w-screen h-full">
+      <DndContext
+        onDragEnd={(event) => {
+          const shiftPerImage = {
+            "/public/point_left.png": {
+              x: -367,
+              y: 40,
+            },
+            "/public/point_up.png": {
+              x: -366,
+              y: 136,
+            },
+          };
+          const shift =
+            shiftPerImage[
+              event.active.id.toString() as keyof typeof shiftPerImage
+            ];
+
+          updateCurrentSlideImageList([
+            ...currentSlide.imageList,
+            {
+              id: uuidv4(),
+              filePath: event.active.id.toString(),
+              x: event.delta.x + window.innerWidth + shift.x,
+              y: event.delta.y + shift.y,
+            },
+          ]);
+        }}
+      >
+        {isPreviewMode
+          ? renderWithBackgroundDark(content)
+          : renderWithBackgroundLight(content)}
+      </DndContext>
+    </div>
+  );
 }

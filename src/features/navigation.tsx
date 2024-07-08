@@ -2,7 +2,7 @@ import { cx } from "class-variance-authority";
 import { Plus } from "lucide-react";
 import { SlideThumbnail } from "./slide-thumbnail/slide-thumbnail";
 import { Slide } from "@/types/slide.types";
-import { useAutoAnimate } from '@formkit/auto-animate/react'
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useEffect, useRef } from "react";
 
 export function Navigation(p: {
@@ -12,9 +12,12 @@ export function Navigation(p: {
   onClickAdd: () => void;
   onClickDelete: (index: number) => void;
 }) {
-  const [parentAnimRef, enableAnimations] = useAutoAnimate()
+  const [parentAnimRef, enableAnimations] = useAutoAnimate();
   return (
-    <div  ref={parentAnimRef} className="w-44 overflow-y-auto h-[calc(100vh-2rem)] p-4 flex flex-col gap-2">
+    <div
+      ref={parentAnimRef}
+      className="fixed w-44 overflow-y-auto h-[calc(100vh-2rem)] p-4 flex flex-col gap-2"
+    >
       {p.slideList.map((slide, index) => (
         <div
           className={cx(

@@ -1,13 +1,12 @@
-
 export type Slide = {
   code: string;
   fileName: string;
-  emojiList : Emoji[]
+  imageList: PickableImage[];
 };
 
-export type Emoji = {
-  x : number;
-  y : number;
-  emoji: string
-  name:string
-}
+export type PickableImage = {
+  id: string;
+  x?: number;
+  y?: number;
+  filePath: string;
+};
