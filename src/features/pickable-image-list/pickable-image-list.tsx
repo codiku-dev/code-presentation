@@ -46,8 +46,7 @@ export function PickableImageList(p: { selectedImage?: PickableImage }) {
         {...listeners1}
         {...attributes1}
         key={PICKABLE_IMAGES[0].filePath}
-        onClick={() => {}}
-        className={cx(" cursor-pointer flex flex-center  ")}
+        className={cx(" cursor-pointer  ")}
       >
         <img src={PICKABLE_IMAGES[0].filePath} width={100} height={100} />
       </div>
@@ -58,7 +57,7 @@ export function PickableImageList(p: { selectedImage?: PickableImage }) {
         {...attributes2}
         key={PICKABLE_IMAGES[1].filePath}
         onClick={() => {}}
-        className={cx(" cursor-pointer flex flex-center  ")}
+        className={cx(" cursor-pointer  ")}
       >
         <img src={PICKABLE_IMAGES[1].filePath} width={100} height={100} />
       </div>

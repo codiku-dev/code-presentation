@@ -10,6 +10,7 @@ import { PickableImage, Slide } from "@/types/slide.types";
 import { PickableImageList } from "@/features/pickable-image-list/pickable-image-list";
 import { DndContext } from "@dnd-kit/core";
 import { v4 as uuidv4 } from "uuid";
+import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 
 export function Home() {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
@@ -114,7 +115,37 @@ export function Home() {
     return (
       <div className="  h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
         <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,#d5c5ff,transparent)]">
-          {children}
+          <DndContext
+            modifiers={[restrictToWindowEdges]}
+            onDragEnd={(event) => {
+              const shiftPerImage = {
+                "/public/point_left.png": {
+                  x: -367,
+                  y: 40,
+                },
+                "/public/point_up.png": {
+                  x: -366,
+                  y: 136,
+                },
+              };
+              const shift =
+                shiftPerImage[
+                  event.active.id.toString() as keyof typeof shiftPerImage
+                ];
+
+              updateCurrentSlideImageList([
+                ...currentSlide.imageList,
+                {
+                  id: uuidv4(),
+                  filePath: event.active.id.toString(),
+                  x: event.delta.x + window.innerWidth + shift.x,
+                  y: event.delta.y + shift.y,
+                },
+              ]);
+            }}
+          >
+            {children}
+          </DndContext>
         </div>
       </div>
     );
@@ -186,46 +217,17 @@ export function Home() {
       </div>
       {slideList.length > 0 && buttonMode}
       <div className="absolute top-[10%] right-1 w-24 bg-black/5  group rounded-sm">
-        {/* <div className="-right-44 relative bg-black group-hover:-translate-x-44 transition transform rounded-sm"> */}
-        {!isPreviewMode && <PickableImageList />}
-        {/* </div> */}
+        <div className="-right-44 relative bg-black group-hover:-translate-x-44 transition transform rounded-sm">
+          {!isPreviewMode && <PickableImageList />}
+        </div>
       </div>
     </div>
   );
   return (
-    <div className="w-screen h-full">
-      <DndContext
-        onDragEnd={(event) => {
-          const shiftPerImage = {
-            "/public/point_left.png": {
-              x: -367,
-              y: 40,
-            },
-            "/public/point_up.png": {
-              x: -366,
-              y: 136,
-            },
-          };
-          const shift =
-            shiftPerImage[
-              event.active.id.toString() as keyof typeof shiftPerImage
-            ];
-
-          updateCurrentSlideImageList([
-            ...currentSlide.imageList,
-            {
-              id: uuidv4(),
-              filePath: event.active.id.toString(),
-              x: event.delta.x + window.innerWidth + shift.x,
-              y: event.delta.y + shift.y,
-            },
-          ]);
-        }}
-      >
-        {isPreviewMode
-          ? renderWithBackgroundDark(content)
-          : renderWithBackgroundLight(content)}
-      </DndContext>
+    <div className="w-screen h-full p-4">
+      {isPreviewMode
+        ? renderWithBackgroundDark(content)
+        : renderWithBackgroundLight(content)}
     </div>
   );
 }
