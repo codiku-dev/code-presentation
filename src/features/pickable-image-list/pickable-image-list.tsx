@@ -3,8 +3,8 @@ import { cx } from "class-variance-authority";
 import { useDraggable } from "@dnd-kit/core";
 
 export const PICKABLE_IMAGES: { filePath: string }[] = [
-  { filePath: "/src/assets/point_left.png" },
-  { filePath: "/src/assets/point_up.png" },
+  { filePath: "/point_left.png" },
+  { filePath: "/point_up.png" },
 ];
 export function PickableImageList(p: { selectedImage?: PickableImage }) {
   const {
