@@ -33,8 +33,10 @@ export function DroppableSlideLayout(p: {
             left: isNaN(Number(image.x)) ? 0 : Number(image.x),
           }}
           onContextMenu={(e) => {
-            e.preventDefault();
-            p.onRightClickPickableImage(image);
+            if (!p.isPreviewMode) {
+              e.preventDefault();
+              p.onRightClickPickableImage(image);
+            }
           }}
         >
           <DraggableImage
