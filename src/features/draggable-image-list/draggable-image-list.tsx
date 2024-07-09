@@ -3,6 +3,8 @@ import { DraggableImage } from "./draggable-image";
 export const DRAGGABLE_IMAGES: { filePath: string }[] = [
   { filePath: "/point_left.png" },
   { filePath: "/point_up.png" },
+  { filePath: "/point_right.png" },
+  { filePath: "/point_down.png" },
 ];
 export function DraggableImageList() {
   return (

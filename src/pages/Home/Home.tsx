@@ -11,7 +11,7 @@ import {
   DRAGGABLE_IMAGES,
   DraggableImageList,
 } from "@/features/draggable-image-list/draggable-image-list";
-import { DndContext, DragOverlay, pointerWithin } from "@dnd-kit/core";
+import { DndContext, pointerWithin } from "@dnd-kit/core";
 import { v4 as uuidv4 } from "uuid";
 import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
 export function Home() {
@@ -197,23 +197,13 @@ export function Home() {
             modifiers={[restrictToWindowEdges, snapCenterToCursor]}
             collisionDetection={pointerWithin}
             onDragEnd={(event) => {
+              const SHIFTX = -635;
+              const SHIFTY = 118;
               // If the id is comming from the list of images, we add it to the current slide
               if (event.active.id.toString().startsWith("/")) {
-                // Relative to start
-                const shiftPerImage = {
-                  [DRAGGABLE_IMAGES[0].filePath]: {
-                    x: -635,
-                    y: 118,
-                  },
-                  [DRAGGABLE_IMAGES[1].filePath]: {
-                    x: -635,
-                    y: 218,
-                  },
-                };
-                const shift =
-                  shiftPerImage[
-                    event.active.id.toString() as keyof typeof shiftPerImage
-                  ];
+                const imageIndex = DRAGGABLE_IMAGES.findIndex(
+                  (image) => image.filePath === event.active.id.toString()
+                );
 
                 const xFromBorderRight =
                   Number(event.active.rect.current.translated?.right) -
@@ -228,9 +218,9 @@ export function Home() {
                   {
                     id: uuidv4(),
                     filePath: event.active.id.toString(),
-                    x: window.innerWidth + xFromBorderRight + shift.x,
+                    x: window.innerWidth + xFromBorderRight + SHIFTX,
 
-                    y: yFromBorderTop + shift.y,
+                    y: yFromBorderTop + (SHIFTY + imageIndex * 100),
                   },
                 ]);
               } else {
