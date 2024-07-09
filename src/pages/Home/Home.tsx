@@ -179,11 +179,13 @@ export function Home() {
         </div>
       </div>
       {slideList.length > 0 && buttonMode}
-      <div className="fixed top-44 right-5  bg-black/5  group rounded-sm  ">
-        <div className=" opacity-0 rounded-sm group-hover:visible group-hover:opacity-100">
-          {!isPreviewMode && <DraggableImageList />}
+      {slideList.length > 0 && (
+        <div className="fixed top-44 right-5  bg-black/5  group rounded-sm  ">
+          <div className="opacity-0 rounded-sm group-hover:visible group-hover:opacity-100 group">
+            <div className="">{!isPreviewMode && <DraggableImageList />}</div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 
@@ -198,15 +200,14 @@ export function Home() {
               // If the id is comming from the list of images, we add it to the current slide
               if (event.active.id.toString().startsWith("/")) {
                 // Relative to start
-                console.log(event.active.id.toString());
                 const shiftPerImage = {
                   [DRAGGABLE_IMAGES[0].filePath]: {
-                    x: -620,
-                    y: 115,
+                    x: -635,
+                    y: 118,
                   },
                   [DRAGGABLE_IMAGES[1].filePath]: {
-                    x: -632,
-                    y: 214,
+                    x: -635,
+                    y: 218,
                   },
                 };
                 const shift =
@@ -227,14 +228,9 @@ export function Home() {
                   {
                     id: uuidv4(),
                     filePath: event.active.id.toString(),
-                    x:
-                      window.innerWidth +
-                      xFromBorderRight +
-                      shiftPerImage[event.active.id.toString()].x,
+                    x: window.innerWidth + xFromBorderRight + shift.x,
 
-                    y:
-                      yFromBorderTop +
-                      shiftPerImage[event.active.id.toString()].y,
+                    y: yFromBorderTop + shift.y,
                   },
                 ]);
               } else {
