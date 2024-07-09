@@ -59,7 +59,7 @@ export function DroppableSlideLayout(p: {
               placeholder="code.tsx"
               value={p.slide.fileName || ""}
               onChange={(e) => p.onChangeFilename(e.target.value)}
-              className="flex min-w-20 w-20 max-w-44   text-white hover:text-white cursor-pointer bg-transparent border-0 border-b-2 border-transparent focus-visible:ring-offset-0 focus-visible:ring-0"
+              className="flex    text-white hover:text-white cursor-pointer bg-transparent border-0 border-b-2 border-transparent focus-visible:ring-offset-0 focus-visible:ring-0"
             />
           </div>
         ) : (
