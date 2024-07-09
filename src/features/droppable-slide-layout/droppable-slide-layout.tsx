@@ -4,7 +4,7 @@ import { cx } from "class-variance-authority";
 import { Minus, Square, X } from "lucide-react";
 import { useDroppable } from "@dnd-kit/core";
 import { DraggableImage } from "../draggable-image-list/draggable-image";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function DroppableSlideLayout(p: {
   children: React.ReactNode;
@@ -19,6 +19,11 @@ export function DroppableSlideLayout(p: {
     id: "droppable",
   });
   const refLayout = useRef<HTMLDivElement>(null);
+  const [layoutRef, setLayoutRef] = useState<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setLayoutRef(refLayout.current);
+  }, [refLayout]);
   const renderDraggedImageList = () => {
     return p.slide.imageList.map((image, index) => {
       return (
@@ -92,8 +97,7 @@ export function DroppableSlideLayout(p: {
       ref={refLayout}
       id="parent"
       style={{
-        left:
-          window.screen.width / 2 - Number(refLayout?.current?.offsetWidth / 2),
+        left: window.screen.width / 2 - Number(layoutRef?.offsetWidth / 2),
       }}
       className={cx(
         "fixed top-14 max-h-[830px] overflow-y-hidden  min-w-[1200px] bg-primary rounded-md  border-2 border-gray-700 p-4 text-white h-full "
