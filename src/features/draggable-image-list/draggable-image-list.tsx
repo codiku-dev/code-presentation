@@ -1,13 +1,12 @@
-import { DraggableImageT } from "@/types/slide.types";
 import { DraggableImage } from "./draggable-image";
 
 export const DRAGGABLE_IMAGES: { filePath: string }[] = [
   { filePath: "/point_left.png" },
   { filePath: "/point_up.png" },
 ];
-export function DraggableImageList(p: { selectedImage?: DraggableImageT }) {
+export function DraggableImageList() {
   return (
-    <div className="rounded-md">
+    <div className="rounded-md hover:animate-fadeIn03">
       {DRAGGABLE_IMAGES.map((image) => (
         <DraggableImage
           key={image.filePath}

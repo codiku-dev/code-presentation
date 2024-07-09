@@ -179,7 +179,7 @@ export function Home() {
         </div>
       </div>
       {slideList.length > 0 && buttonMode}
-      <div className="fixed top-44 right-5 w-24 bg-black/5  group rounded-sm  ">
+      <div className="fixed top-44 right-5  bg-black/5  group rounded-sm  ">
         <div className=" opacity-0 rounded-sm group-hover:visible group-hover:opacity-100">
           {!isPreviewMode && <DraggableImageList />}
         </div>

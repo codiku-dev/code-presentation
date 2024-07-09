@@ -17,7 +17,7 @@ export function DraggableImage(p: { id: string; imgHref: string }) {
       style={style}
       {...listeners}
       {...attributes}
-      className={cx(" cursor-pointer rounded-md")}
+      className={cx(" cursor-pointer rounded-md  hover:bg-indigo-400/20  ")}
     >
       <img src={p.imgHref} width={100} height={100} />
     </div>
