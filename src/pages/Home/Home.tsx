@@ -197,7 +197,7 @@ export function Home() {
             modifiers={[restrictToWindowEdges, snapCenterToCursor]}
             collisionDetection={pointerWithin}
             onDragEnd={(event) => {
-              const SHIFTX = -635;
+              const SHIFTX = -386;
               const SHIFTY = 118;
               // If the id is comming from the list of images, we add it to the current slide
               if (event.active.id.toString().startsWith("/")) {

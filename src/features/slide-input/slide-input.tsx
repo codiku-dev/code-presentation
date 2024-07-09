@@ -45,7 +45,7 @@ export function SlideInput(p: {
           lineNumbers: false,
           foldGutter: false,
         }}
-        maxHeight="860px"
+        maxHeight="760px"
         extensions={[javascript({ jsx: true, typescript: true })]}
         onChange={(value, viewUpdate) => {
           p.onCodeChange(value);
