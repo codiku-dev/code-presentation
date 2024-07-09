@@ -1,10 +1,10 @@
 export type Slide = {
   code: string;
   fileName: string;
-  imageList: PickableImage[];
+  imageList: DraggableImageT[];
 };
 
-export type PickableImage = {
+export type DraggableImageT = {
   id: string;
   x?: number;
   y?: number;

@@ -1,40 +1,43 @@
 import { Input } from "@/components/ui/input";
-import { PickableImage, Slide } from "@/types/slide.types";
+import { DraggableImageT, Slide } from "@/types/slide.types";
 import { cx } from "class-variance-authority";
 import { Minus, Square, X } from "lucide-react";
 import { useDroppable } from "@dnd-kit/core";
+import { DraggableImage } from "../draggable-image-list/draggable-image";
 
-export function SlideLayout(p: {
+export function DroppableSlideLayout(p: {
   children: React.ReactNode;
   isPreviewMode: boolean;
   slide: Slide;
   onChangeFilename: (filename: string) => void;
-  onPickLocationForImage: (image: PickableImage) => void;
-  selectedImage?: PickableImage;
-  onRightClickPickableImage: (image: PickableImage) => void;
+  onPickLocationForImage: (image: DraggableImageT) => void;
+  selectedImage?: DraggableImageT;
+  onRightClickPickableImage: (image: DraggableImageT) => void;
 }) {
   const { isOver, setNodeRef } = useDroppable({
     id: "droppable",
   });
-  const renderDroppedImageList = () => {
+  const renderDraggedImageList = () => {
     return p.slide.imageList.map((image, index) => {
       return (
         <div
+          key={image.id}
+          style={{
+            position: "absolute",
+            width: 100,
+            height: 100,
+            top: image.y,
+            left: image.x,
+          }}
           onContextMenu={(e) => {
             e.preventDefault();
             p.onRightClickPickableImage(image);
           }}
-          key={index}
-          className={cx("absolute")}
-          style={{
-            top: `${image.y}px`,
-            left: `${image.x}px`,
-          }}
         >
-          <img
-            src={new URL(image.filePath, import.meta.url).href}
-            height={100}
-            width={100}
+          <DraggableImage
+            key={image.id}
+            id={image.id}
+            imgHref={new URL(image.filePath, import.meta.url).href}
           />
         </div>
       );
@@ -65,24 +68,30 @@ export function SlideLayout(p: {
       </div>
     </div>
   );
+
+  const droppableSection = (
+    <div
+      ref={setNodeRef}
+      className={cx(
+        "h-[870px] overflow-y-hidden",
+        isOver ? "bg-green-900" : ""
+      )}
+    >
+      {p.children}
+      {renderDraggedImageList()}
+    </div>
+  );
+
   return (
     <div
       id="parent"
+      style={{ left: window.screen.width / 2 - 350 }}
       className={cx(
-        "relative max-h-[930px] overflow-y-auto min-h-[90%] min-w-[1200px] bg-primary rounded-md  border-2 border-gray-700 p-4 text-white h-full "
+        "fixed top-14 max-h-[930px] overflow-y-auto min-h-[90%] min-w-[1200px] bg-primary rounded-md  border-2 border-gray-700 p-4 text-white h-full "
       )}
     >
       {header}
-      <div
-        ref={setNodeRef}
-        className={cx(
-          "h-[870px] overflow-y-hidden",
-          isOver ? "bg-green-900" : ""
-        )}
-      >
-        {p.children}
-        {renderDroppedImageList()}
-      </div>
+      {droppableSection}
     </div>
   );
 }

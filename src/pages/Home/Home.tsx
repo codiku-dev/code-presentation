@@ -1,17 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/features/navigation";
 import { SlideInput } from "@/features/slide-input/slide-input";
-import { SlideLayout } from "@/features/slide-layout/slide-layout";
+import { DroppableSlideLayout } from "@/features/droppable-slide-layout/droppable-slide-layout";
 import { SlidePreview } from "@/features/slide-preview/slide-preview";
 import { cx } from "class-variance-authority";
 import { useEffect, useState } from "react";
 import { INITIAL_SLIDES } from "./constant";
-import { PickableImage, Slide } from "@/types/slide.types";
-import { PickableImageList } from "@/features/pickable-image-list/pickable-image-list";
-import { DndContext } from "@dnd-kit/core";
+import { DraggableImageT, Slide } from "@/types/slide.types";
+import {
+  DRAGGABLE_IMAGES,
+  DraggableImageList,
+} from "@/features/draggable-image-list/draggable-image-list";
+import { DndContext, DragOverlay, pointerWithin } from "@dnd-kit/core";
 import { v4 as uuidv4 } from "uuid";
-import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-import { PICKABLE_IMAGES } from "@/features/pickable-image-list/pickable-image-list";
+import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
 export function Home() {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [slideList, setSlideList] = useState<Slide[]>(
@@ -37,7 +39,7 @@ export function Home() {
     setSlideList(newSlideList);
   };
 
-  const updateCurrentSlideImageList = (imageList: PickableImage[]) => {
+  const updateCurrentSlideImageList = (imageList: DraggableImageT[]) => {
     const newSlideList = [...slideList];
     newSlideList[currentSlideIndex].imageList = imageList;
     setSlideList(newSlideList);
@@ -74,7 +76,7 @@ export function Home() {
     setSlideList(newSlideList);
   };
 
-  const deleteImageFromCurrentSlide = (image: PickableImage) => {
+  const deleteImageFromCurrentSlide = (image: DraggableImageT) => {
     const newSlideList = [...slideList];
     newSlideList[currentSlideIndex].imageList = newSlideList[
       currentSlideIndex
@@ -110,55 +112,6 @@ export function Home() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isPreviewMode, currentSlideIndex]);
-
-  const renderWithBackgroundLight = (children: React.ReactNode) => {
-    return (
-      <div className="  h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
-        <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,#d5c5ff,transparent)]">
-          <DndContext
-            modifiers={[restrictToWindowEdges]}
-            onDragEnd={(event) => {
-              // const shiftPerImage = {
-              //   [new URL(PICKABLE_IMAGES[0].filePath, import.meta.url).href]: {
-              //     x: -367,
-              //     y: 40,
-              //   },
-              //   [new URL(PICKABLE_IMAGES[1].filePath, import.meta.url).href]: {
-              //     x: -366,
-              //     y: 136,
-              //   },
-              // };
-              // const shift =
-              //   shiftPerImage[
-              //     event.active.id.toString() as keyof typeof shiftPerImage
-              //   ];
-
-              const xFromBorderRight =
-                Number(event.active.rect.current.translated?.right) -
-                Number(event.active.rect.current.initial?.right);
-
-              const yFromBorderTop =
-                Number(event.active.rect.current.translated?.top) -
-                Number(event.active.rect.current.initial?.top);
-
-              updateCurrentSlideImageList([
-                ...currentSlide.imageList,
-                {
-                  id: uuidv4(),
-                  filePath: event.active.id.toString(),
-                  x: window.innerWidth + xFromBorderRight - 380,
-
-                  y: yFromBorderTop + 115,
-                },
-              ]);
-            }}
-          >
-            {children}
-          </DndContext>
-        </div>
-      </div>
-    );
-  };
 
   const renderWithBackgroundDark = (children: React.ReactNode) => {
     return (
@@ -201,7 +154,7 @@ export function Home() {
           className={`h-full w-full gap-12 pt-12 overflow-y-hidde flex-center`}
         >
           {currentSlide && (
-            <SlideLayout
+            <DroppableSlideLayout
               isPreviewMode={isPreviewMode}
               slide={currentSlide}
               onChangeFilename={updateCurrentSlideFilename}
@@ -221,18 +174,94 @@ export function Home() {
                   onCodeChange={updateCurrentSlideCode}
                 />
               )}
-            </SlideLayout>
+            </DroppableSlideLayout>
           )}
         </div>
       </div>
       {slideList.length > 0 && buttonMode}
       <div className="fixed top-44 right-5 w-24 bg-black/5  group rounded-sm  ">
         <div className=" opacity-0 rounded-sm group-hover:visible group-hover:opacity-100">
-          {!isPreviewMode && <PickableImageList />}
+          {!isPreviewMode && <DraggableImageList />}
         </div>
       </div>
     </div>
   );
+
+  const renderWithBackgroundLight = (children: React.ReactNode) => {
+    return (
+      <div className="  h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
+        <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,#d5c5ff,transparent)]">
+          <DndContext
+            modifiers={[restrictToWindowEdges, snapCenterToCursor]}
+            collisionDetection={pointerWithin}
+            onDragEnd={(event) => {
+              // If the id is comming from the list of images, we add it to the current slide
+              if (event.active.id.toString().startsWith("/")) {
+                // Relative to start
+                console.log(event.active.id.toString());
+                const shiftPerImage = {
+                  [DRAGGABLE_IMAGES[0].filePath]: {
+                    x: -620,
+                    y: 115,
+                  },
+                  [DRAGGABLE_IMAGES[1].filePath]: {
+                    x: -632,
+                    y: 214,
+                  },
+                };
+                const shift =
+                  shiftPerImage[
+                    event.active.id.toString() as keyof typeof shiftPerImage
+                  ];
+
+                const xFromBorderRight =
+                  Number(event.active.rect.current.translated?.right) -
+                  Number(event.active.rect.current.initial?.right);
+
+                const yFromBorderTop =
+                  Number(event.active.rect.current.translated?.top) -
+                  Number(event.active.rect.current.initial?.top);
+                // add new image to the current slide
+                updateCurrentSlideImageList([
+                  ...currentSlide.imageList,
+                  {
+                    id: uuidv4(),
+                    filePath: event.active.id.toString(),
+                    x:
+                      window.innerWidth +
+                      xFromBorderRight +
+                      shiftPerImage[event.active.id.toString()].x,
+
+                    y:
+                      yFromBorderTop +
+                      shiftPerImage[event.active.id.toString()].y,
+                  },
+                ]);
+              } else {
+                const imageIndexToUpdate = currentSlide.imageList.findIndex(
+                  (img) => img.id == event.active.id.toString()
+                );
+
+                const imageToUpdate =
+                  currentSlide.imageList[imageIndexToUpdate];
+                console.log(event);
+                const updatedImageList = [...currentSlide.imageList];
+                updatedImageList[imageIndexToUpdate] = {
+                  ...imageToUpdate,
+                  x: imageToUpdate.x! + event.delta.x,
+                  y: imageToUpdate.y! + event.delta.y,
+                };
+
+                updateCurrentSlideImageList(updatedImageList);
+              }
+            }}
+          >
+            {children}
+          </DndContext>
+        </div>
+      </div>
+    );
+  };
   return (
     <div className="w-screen h-full">
       {isPreviewMode
