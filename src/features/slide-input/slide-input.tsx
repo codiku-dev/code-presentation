@@ -1,5 +1,5 @@
 import { javascript } from "@codemirror/lang-javascript";
-import { tokyoNight } from "@uiw/codemirror-theme-tokyo-night";
+import { dracula } from "@uiw/codemirror-theme-dracula";
 import CodeMirror from "@uiw/react-codemirror";
 import "./slide-input.css";
 import { Slide } from "@/types/slide.types";
@@ -32,15 +32,14 @@ export function SlideInput(p: {
     };
   }, [p.slide.code, p.onCodeChange]);
   return (
-    <div className="p-2">
+    <div className="">
       <CodeMirror
         value={p.slide.code}
         style={{
           fontSize: "1rem",
-          margin: "5px",
           ...p.style,
         }}
-        theme={tokyoNight}
+        theme={dracula}
         basicSetup={{
           lineNumbers: false,
           foldGutter: false,
