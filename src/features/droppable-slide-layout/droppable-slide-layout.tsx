@@ -20,10 +20,22 @@ export function DroppableSlideLayout(p: {
   });
   const refLayout = useRef<HTMLDivElement>(null);
   const [layoutRef, setLayoutRef] = useState<HTMLDivElement | null>(null);
-
+  const [width , setWidth] = useState(window.innerWidth);
+  useEffect(()=> {
+    const handler = ()=> {
+      setWidth(window.innerWidth);
+    }
+    window.addEventListener('resize', handler);
+    return ()=> {
+      window.removeEventListener('resize', handler);
+    } 
+  },[])
+  
   useEffect(() => {
     setLayoutRef(refLayout.current);
+    console.log("update")
   }, [refLayout]);
+
   const renderDraggedImageList = () => {
     return p.slide.imageList.map((image, index) => {
       return (
@@ -56,20 +68,6 @@ export function DroppableSlideLayout(p: {
   const header = (
     <div className="relative flex ">
       <div className="absolute left-1/2 transform -translate-x-1/2 text-xs text-gray-500">
-        {/* {!p.isPreviewMode ? (
-          <div className="flex-center">
-            <span className="bg-purple-400 rounded-full w-1 h-1"></span>
-            <Input
-              type="text"
-              placeholder="code.tsx"
-              value={p.slide.fileName || ""}
-              onChange={(e) => p.onChangeFilename(e.target.value)}
-              className="flex    text-white hover:text-white cursor-pointer bg-transparent border-0 border-b-2 border-transparent focus-visible:ring-offset-0 focus-visible:ring-0"
-            />
-          </div>
-        ) : (
-          <span>{p.slide.fileName || "code.tsx"}</span>
-        )} */}
       </div>
       <div className="flex gap-2 ml-auto items-center justify-center">
         <Minus className="text-gray-600" size={14} />
@@ -91,14 +89,14 @@ export function DroppableSlideLayout(p: {
       {renderDraggedImageList()}
     </div>
   );
-
+  console.log(layoutRef?.offsetWidth)
   return (
     <div
       ref={refLayout}
       id="parent"
       style={{
         left:
-          window.screen.width / 2 - Number((layoutRef?.offsetWidth || 0) / 2),
+          window.innerWidth / 2 - Number((layoutRef?.offsetWidth || 0) / 2),
       }}
       className={cx(
         "fixed top-14 max-h-[830px] overflow-y-hidden  min-w-[1200px] bg-primary rounded-md  border-2 border-gray-700 p-4 text-white h-full "
