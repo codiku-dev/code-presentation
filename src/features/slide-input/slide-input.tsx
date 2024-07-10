@@ -4,7 +4,9 @@ import CodeMirror from "@uiw/react-codemirror";
 import "./slide-input.css";
 import { Slide } from "@/types/slide.types";
 import * as prettier from "prettier";
-import tsParser from "prettier/parser-typescript";
+import babel from 'prettier/plugins/babel'
+import esTree from 'prettier/plugins/estree'
+
 
 import { useEffect } from "react";
 export function SlideInput(p: {
@@ -18,8 +20,8 @@ export function SlideInput(p: {
         event.preventDefault();
         const formattedCode = await prettier.format(p.slide.code, {
           semi: false,
-          parser: "typescript",
-          plugins: [tsParser],
+          parser: "babel",
+          plugins: [esTree,babel],
         });
         p.onCodeChange(formattedCode);
       }

@@ -53,8 +53,11 @@ export function Home() {
   const addSlide = () => {
     if (slideList.length === 0) {
       const newSlide: Slide = {
-        fileName: "",
-        code: "",
+        fileName: "code.tsx",
+        code: `function letsPrez(){
+            console.log("You can format with ctrl + s")
+              console.log("You can drag emoji in here (right click to delete)")
+        }`,
         imageList: [],
         id: uuidv4(),
       };

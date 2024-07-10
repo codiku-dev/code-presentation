@@ -67,6 +67,7 @@ export function DroppableSlideLayout(p: {
   const header = (
     <div className="relative flex ">
       <div className="absolute left-1/2 transform -translate-x-1/2 text-xs text-gray-500">
+        {p.isPreviewMode ? p.slide.fileName : "todo.tsx"}
       </div>
       <div className="flex gap-2 ml-auto items-center justify-center">
         <Minus className="text-gray-600" size={14} />
