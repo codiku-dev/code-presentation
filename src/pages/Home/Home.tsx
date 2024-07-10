@@ -18,18 +18,19 @@ export function Home() {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
 
   const [slideList, setSlideList] = useState<Slide[]>(
-    localStorage.getItem("slideList") ? JSON.parse(localStorage.getItem("slideList")!) : INITIAL_SLIDES
+    localStorage.getItem("slideList")
+      ? JSON.parse(localStorage.getItem("slideList")!)
+      : INITIAL_SLIDES
   );
   const [currentSlide, setCurrentSlide] = useState<Slide>(slideList[0]);
-  const currentSlideIndex = slideList.findIndex((s) => s.id === currentSlide?.id);
+  const currentSlideIndex = slideList.findIndex(
+    (s) => s.id === currentSlide?.id
+  );
 
-  console.log('*** slideList', slideList)
-  console.log('*** currentSlide', currentSlide)
-  console.log('*** currentSlideIndex', currentSlideIndex)
   useEffect(() => {
     localStorage.setItem("slideList", JSON.stringify(slideList));
     if (slideList.length === 0) {
-      setCurrentSlide(undefined)
+      setCurrentSlide(undefined);
     }
   }, [slideList]);
 
@@ -51,11 +52,16 @@ export function Home() {
   };
   const addSlide = () => {
     if (slideList.length === 0) {
-      const newSlide: Slide = { fileName: "", code: "", imageList: [], id: uuidv4() }
+      const newSlide: Slide = {
+        fileName: "",
+        code: "",
+        imageList: [],
+        id: uuidv4(),
+      };
       setSlideList([newSlide]);
       setCurrentSlide(newSlide);
     } else {
-      const previousSlide = { ...slideList[slideList.length - 1] }
+      const previousSlide = { ...slideList[slideList.length - 1] };
       const newSlide = {
         ...previousSlide,
         id: uuidv4(),
@@ -67,18 +73,18 @@ export function Home() {
             };
           }),
         ],
-      }
+      };
 
-      setSlideList([
-        ...slideList,
-        newSlide,
-      ]);
-      setCurrentSlide(newSlide)
+      setSlideList([...slideList, newSlide]);
+      setCurrentSlide(newSlide);
     }
   };
   const deleteSlide = (slide: Slide) => {
     const newSlideList = [...slideList];
-    newSlideList.splice(newSlideList.findIndex((s) => s.id === slide.id), 1);
+    newSlideList.splice(
+      newSlideList.findIndex((s) => s.id === slide.id),
+      1
+    );
     if (newSlideList.length > 0 && currentSlideIndex > 0) {
       setCurrentSlide(newSlideList[newSlideList.length - 1]);
     }
@@ -146,8 +152,6 @@ export function Home() {
 
   const content = (
     <div className="flex gap-2 h-full">
-
-
       <div className="w-full flex justify-center ">
         <div
           className={`h-full w-full gap-12 pt-12 overflow-y-hidde flex-center`}
@@ -161,7 +165,6 @@ export function Home() {
               onPickLocationForImage={(image) => {
                 const newSlideList = [...slideList];
                 newSlideList[currentSlideIndex].imageList.push(image);
-                console.log(newSlideList[currentSlideIndex]);
                 setSlideList(newSlideList);
               }}
             >
@@ -221,9 +224,7 @@ export function Home() {
         (img) => img.id == event.active.id.toString()
       );
 
-      const imageToUpdate =
-        currentSlide.imageList[imageIndexToUpdate];
-      console.log(event);
+      const imageToUpdate = currentSlide.imageList[imageIndexToUpdate];
       const updatedImageList = [...currentSlide.imageList];
       updatedImageList[imageIndexToUpdate] = {
         ...imageToUpdate,
@@ -233,7 +234,7 @@ export function Home() {
 
       updateCurrentSlideImageList(updatedImageList);
     }
-  }
+  };
 
   const renderWithBackgroundLight = (children: React.ReactNode) => {
     return (
@@ -244,8 +245,7 @@ export function Home() {
               slideList={slideList}
               currentSlide={currentSlide}
               onClickItem={(slide) => {
-                console.log(" set as current slide", slide)
-                setCurrentSlide(slide)
+                setCurrentSlide(slide);
               }}
               onClickAdd={addSlide}
               onClickDelete={deleteSlide}

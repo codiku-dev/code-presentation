@@ -30,10 +30,9 @@ export function DroppableSlideLayout(p: {
       window.removeEventListener('resize', handler);
     } 
   },[])
-  
+
   useEffect(() => {
     setLayoutRef(refLayout.current);
-    console.log("update")
   }, [refLayout]);
 
   const renderDraggedImageList = () => {
@@ -89,7 +88,6 @@ export function DroppableSlideLayout(p: {
       {renderDraggedImageList()}
     </div>
   );
-  console.log(layoutRef?.offsetWidth)
   return (
     <div
       ref={refLayout}
