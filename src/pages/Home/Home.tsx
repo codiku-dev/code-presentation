@@ -11,21 +11,26 @@ import {
   DRAGGABLE_IMAGES,
   DraggableImageList,
 } from "@/features/draggable-image-list/draggable-image-list";
-import { DndContext, pointerWithin } from "@dnd-kit/core";
+import { DndContext, DragEndEvent, pointerWithin } from "@dnd-kit/core";
 import { v4 as uuidv4 } from "uuid";
 import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
 export function Home() {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
-  const [slideList, setSlideList] = useState<Slide[]>(
-    JSON.parse(
-      localStorage.getItem("slideList") || JSON.stringify(INITIAL_SLIDES)
-    )
-  );
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const currentSlide = slideList[currentSlideIndex];
 
+  const [slideList, setSlideList] = useState<Slide[]>(
+    []
+  );
+  const [currentSlide, setCurrentSlide] = useState<Slide>();
+  const currentSlideIndex = slideList.findIndex((s) => s.id === currentSlide?.id);
+
+  console.log('*** slideList', slideList)
+  console.log('*** currentSlide', currentSlide)
+  console.log('*** currentSlideIndex', currentSlideIndex)
   useEffect(() => {
     localStorage.setItem("slideList", JSON.stringify(slideList));
+    if (slideList.length === 0) {
+      setCurrentSlide(undefined)
+    }
   }, [slideList]);
 
   const updateCurrentSlideCode = (code: string) => {
@@ -46,32 +51,36 @@ export function Home() {
   };
   const addSlide = () => {
     if (slideList.length === 0) {
-      setSlideList([{ fileName: "", code: "", imageList: [] }]);
-      setCurrentSlideIndex(0);
+      const newSlide: Slide = { fileName: "", code: "", imageList: [], id: uuidv4() }
+      setSlideList([newSlide]);
+      setCurrentSlide(newSlide);
     } else {
-      // When creating a new slide we add a copy of the previous ( if there is a previous, but we don't want to keep the same id for the images )
+      const previousSlide = { ...slideList[slideList.length - 1] }
+      const newSlide = {
+        ...previousSlide,
+        id: uuidv4(),
+        imageList: [
+          ...slideList[slideList.length - 1].imageList.map((image) => {
+            return {
+              ...image,
+              id: uuidv4(),
+            };
+          }),
+        ],
+      }
+
       setSlideList([
         ...slideList,
-        {
-          ...slideList[slideList.length - 1],
-          imageList: [
-            ...slideList[slideList.length - 1].imageList.map((image) => {
-              return {
-                ...image,
-                id: uuidv4(),
-              };
-            }),
-          ],
-        },
+        newSlide,
       ]);
-      setCurrentSlideIndex(slideList.length);
+      setCurrentSlide(newSlide)
     }
   };
-  const deleteSlide = (index: number) => {
+  const deleteSlide = (slide: Slide) => {
     const newSlideList = [...slideList];
-    newSlideList.splice(index, 1);
+    newSlideList.splice(newSlideList.findIndex((s) => s.id === slide.id), 1);
     if (newSlideList.length > 0 && currentSlideIndex > 0) {
-      setCurrentSlideIndex((curr) => curr - 1);
+      setCurrentSlide(newSlideList[newSlideList.length - 1]);
     }
     setSlideList(newSlideList);
   };
@@ -84,11 +93,11 @@ export function Home() {
     setSlideList(newSlideList);
   };
   const goToPreviousSlide = () => {
-    setCurrentSlideIndex(currentSlideIndex - 1);
+    setCurrentSlide(slideList[currentSlideIndex - 1]);
   };
 
   const goToNextSlide = () => {
-    setCurrentSlideIndex(currentSlideIndex + 1);
+    setCurrentSlide(slideList[currentSlideIndex + 1]);
   };
 
   useEffect(() => {
@@ -137,17 +146,7 @@ export function Home() {
 
   const content = (
     <div className="flex gap-2 h-full">
-      {!isPreviewMode && (
-        <Navigation
-          slideList={slideList}
-          currentSlideIndex={currentSlideIndex}
-          onClickItem={(index) => {
-            setCurrentSlideIndex(index);
-          }}
-          onClickAdd={addSlide}
-          onClickDelete={deleteSlide}
-        />
-      )}
+
 
       <div className="w-full flex justify-center ">
         <div
@@ -189,58 +188,74 @@ export function Home() {
     </div>
   );
 
+  const dropImage = (event: DragEndEvent) => {
+    if (!currentSlide) return;
+    const SHIFTX = -386;
+    const SHIFTY = 118;
+    // If the id is comming from the list of images, we add it to the current slide
+    if (event.active.id.toString().startsWith("/")) {
+      const imageIndex = DRAGGABLE_IMAGES.findIndex(
+        (image) => image.filePath === event.active.id.toString()
+      );
+
+      const xFromBorderRight =
+        Number(event.active.rect.current.translated?.right) -
+        Number(event.active.rect.current.initial?.right);
+
+      const yFromBorderTop =
+        Number(event.active.rect.current.translated?.top) -
+        Number(event.active.rect.current.initial?.top);
+      // add new image to the current slide
+      updateCurrentSlideImageList([
+        ...currentSlide.imageList,
+        {
+          id: uuidv4(),
+          filePath: event.active.id.toString(),
+          x: window.innerWidth + xFromBorderRight + SHIFTX,
+
+          y: yFromBorderTop + (SHIFTY + imageIndex * 100),
+        },
+      ]);
+    } else {
+      const imageIndexToUpdate = currentSlide.imageList.findIndex(
+        (img) => img.id == event.active.id.toString()
+      );
+
+      const imageToUpdate =
+        currentSlide.imageList[imageIndexToUpdate];
+      console.log(event);
+      const updatedImageList = [...currentSlide.imageList];
+      updatedImageList[imageIndexToUpdate] = {
+        ...imageToUpdate,
+        x: imageToUpdate.x! + event.delta.x,
+        y: imageToUpdate.y! + event.delta.y,
+      };
+
+      updateCurrentSlideImageList(updatedImageList);
+    }
+  }
+
   const renderWithBackgroundLight = (children: React.ReactNode) => {
     return (
       <div className="  h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
         <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,#d5c5ff,transparent)]">
+          {!isPreviewMode && (
+            <Navigation
+              slideList={slideList}
+              currentSlide={currentSlide}
+              onClickItem={(slide) => {
+                console.log(" set as current slide", slide)
+                setCurrentSlide(slide)
+              }}
+              onClickAdd={addSlide}
+              onClickDelete={deleteSlide}
+              onChangeOrder={setSlideList}
+            />
+          )}
           <DndContext
             modifiers={[restrictToWindowEdges, snapCenterToCursor]}
             collisionDetection={pointerWithin}
-            onDragEnd={(event) => {
-              const SHIFTX = -386;
-              const SHIFTY = 118;
-              // If the id is comming from the list of images, we add it to the current slide
-              if (event.active.id.toString().startsWith("/")) {
-                const imageIndex = DRAGGABLE_IMAGES.findIndex(
-                  (image) => image.filePath === event.active.id.toString()
-                );
-
-                const xFromBorderRight =
-                  Number(event.active.rect.current.translated?.right) -
-                  Number(event.active.rect.current.initial?.right);
-
-                const yFromBorderTop =
-                  Number(event.active.rect.current.translated?.top) -
-                  Number(event.active.rect.current.initial?.top);
-                // add new image to the current slide
-                updateCurrentSlideImageList([
-                  ...currentSlide.imageList,
-                  {
-                    id: uuidv4(),
-                    filePath: event.active.id.toString(),
-                    x: window.innerWidth + xFromBorderRight + SHIFTX,
-
-                    y: yFromBorderTop + (SHIFTY + imageIndex * 100),
-                  },
-                ]);
-              } else {
-                const imageIndexToUpdate = currentSlide.imageList.findIndex(
-                  (img) => img.id == event.active.id.toString()
-                );
-
-                const imageToUpdate =
-                  currentSlide.imageList[imageIndexToUpdate];
-                console.log(event);
-                const updatedImageList = [...currentSlide.imageList];
-                updatedImageList[imageIndexToUpdate] = {
-                  ...imageToUpdate,
-                  x: imageToUpdate.x! + event.delta.x,
-                  y: imageToUpdate.y! + event.delta.y,
-                };
-
-                updateCurrentSlideImageList(updatedImageList);
-              }
-            }}
+            onDragEnd={dropImage}
           >
             {children}
           </DndContext>

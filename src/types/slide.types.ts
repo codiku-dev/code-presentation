@@ -1,4 +1,5 @@
 export type Slide = {
+  id: string
   code: string;
   fileName: string;
   imageList: DraggableImageT[];

@@ -34,8 +34,7 @@ export function SlideThumbnail(p: {
               lineNumbers: true,
             }}
             extensions={[javascript({ jsx: true, typescript: true })]}
-            onChange={(value, viewUpdate) => {
-            }}
+
           />
         )}
       </div>
