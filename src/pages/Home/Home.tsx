@@ -253,6 +253,17 @@ export function Home() {
       {isPreviewMode
         ? renderWithBackgroundDark(content)
         : renderWithBackgroundLight(content)}
+      <div className="text-xs fixed top-5 left-1/2 transform -translate-x-1/2">
+        Made with love by{" "}
+        <a
+          className="underline"
+          href="https://twitter.com/codiku_dev"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          @codiku_dev
+        </a>
+      </div>
     </div>
   );
 }
