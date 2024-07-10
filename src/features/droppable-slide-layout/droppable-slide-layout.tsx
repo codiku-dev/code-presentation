@@ -20,16 +20,16 @@ export function DroppableSlideLayout(p: {
   });
   const refLayout = useRef<HTMLDivElement>(null);
   const [layoutRef, setLayoutRef] = useState<HTMLDivElement | null>(null);
-  const [width , setWidth] = useState(window.innerWidth);
-  useEffect(()=> {
-    const handler = ()=> {
+  const [width, setWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handler = () => {
       setWidth(window.innerWidth);
-    }
-    window.addEventListener('resize', handler);
-    return ()=> {
-      window.removeEventListener('resize', handler);
-    } 
-  },[])
+    };
+    window.addEventListener("resize", handler);
+    return () => {
+      window.removeEventListener("resize", handler);
+    };
+  }, []);
 
   useEffect(() => {
     setLayoutRef(refLayout.current);
@@ -67,7 +67,17 @@ export function DroppableSlideLayout(p: {
   const header = (
     <div className="relative flex ">
       <div className="absolute left-1/2 transform -translate-x-1/2 text-xs text-gray-500">
-        {p.isPreviewMode ? p.slide.fileName : "todo.tsx"}
+        {p.isPreviewMode ? (
+          <div className="text-center">{p.slide.fileName}</div>
+        ) : (
+          <input
+            onChange={(e) => {
+              p.onChangeFilename(e.target.value);
+            }}
+            className="focus:text-white text-center bg-transparent border-NONE"
+            placeholder="todo.tsx"
+          />
+        )}
       </div>
       <div className="flex gap-2 ml-auto items-center justify-center">
         <Minus className="text-gray-600" size={14} />
@@ -94,8 +104,7 @@ export function DroppableSlideLayout(p: {
       ref={refLayout}
       id="parent"
       style={{
-        left:
-         width / 2 - Number((layoutRef?.offsetWidth || 0) / 2),
+        left: width / 2 - Number((layoutRef?.offsetWidth || 0) / 2),
       }}
       className={cx(
         " w-[36rem] md:w-[46rem] lg:w-[56rem] xl:w-[66rem] 2xl:w-[76rem] fixed top-14 max-h-[830px]    bg-primary rounded-md  border-2 border-gray-700 p-4 text-white overflow-x-hidden "
