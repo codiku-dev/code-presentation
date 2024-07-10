@@ -18,9 +18,9 @@ export function Home() {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
 
   const [slideList, setSlideList] = useState<Slide[]>(
-    []
+    localStorage.getItem("slideList") ? JSON.parse(localStorage.getItem("slideList")!) : INITIAL_SLIDES
   );
-  const [currentSlide, setCurrentSlide] = useState<Slide>();
+  const [currentSlide, setCurrentSlide] = useState<Slide>(slideList[0]);
   const currentSlideIndex = slideList.findIndex((s) => s.id === currentSlide?.id);
 
   console.log('*** slideList', slideList)
