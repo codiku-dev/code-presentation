@@ -37,6 +37,7 @@ export function SlideInput(p: {
         value={p.slide.code}
         style={{
           fontSize: "1rem",
+         overflowX:"hidden",
           ...p.style,
         }}
         theme={dracula}
@@ -44,7 +45,6 @@ export function SlideInput(p: {
           lineNumbers: false,
           foldGutter: false,
         }}
-        maxHeight="760px"
         extensions={[javascript({ jsx: true, typescript: true })]}
         onChange={(value, viewUpdate) => {
           p.onCodeChange(value);

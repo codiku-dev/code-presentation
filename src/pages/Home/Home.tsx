@@ -226,6 +226,7 @@ export function Home() {
 
       const imageToUpdate = currentSlide.imageList[imageIndexToUpdate];
       const updatedImageList = [...currentSlide.imageList];
+
       updatedImageList[imageIndexToUpdate] = {
         ...imageToUpdate,
         x: imageToUpdate.x! + event.delta.x,

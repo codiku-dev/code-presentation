@@ -80,7 +80,7 @@ export function DroppableSlideLayout(p: {
     <div
       ref={setNodeRef}
       className={cx(
-        "h-[870px] overflow-y-hidden",
+        "min-h-[760px] overflow-y-hidden ",
         isOver ? "bg-green-900" : ""
       )}
     >
@@ -94,10 +94,10 @@ export function DroppableSlideLayout(p: {
       id="parent"
       style={{
         left:
-          window.innerWidth / 2 - Number((layoutRef?.offsetWidth || 0) / 2),
+         width / 2 - Number((layoutRef?.offsetWidth || 0) / 2),
       }}
       className={cx(
-        "fixed top-14 max-h-[830px] overflow-y-hidden  min-w-[1200px] bg-primary rounded-md  border-2 border-gray-700 p-4 text-white h-full "
+        " w-[36rem] md:w-[46rem] lg:w-[56rem] xl:w-[66rem] 2xl:w-[76rem] fixed top-14 max-h-[830px]    bg-primary rounded-md  border-2 border-gray-700 p-4 text-white overflow-x-hidden "
       )}
     >
       {header}
