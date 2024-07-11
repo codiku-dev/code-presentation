@@ -71,6 +71,7 @@ export function DroppableSlideLayout(p: {
           <div className="text-center">{p.slide.fileName}</div>
         ) : (
           <input
+            value={p.slide.fileName}
             onChange={(e) => {
               p.onChangeFilename(e.target.value);
             }}

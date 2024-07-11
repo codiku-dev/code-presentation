@@ -21,7 +21,7 @@ export function SlideInput(p: {
         const formattedCode = await prettier.format(p.slide.code, {
           semi: false,
           parser: "babel",
-          plugins: [esTree,babel],
+          plugins: [esTree, babel],
         });
         p.onCodeChange(formattedCode);
       }
@@ -39,7 +39,7 @@ export function SlideInput(p: {
         value={p.slide.code}
         style={{
           fontSize: "1rem",
-         overflowX:"hidden",
+          overflowX: "hidden",
           ...p.style,
         }}
         theme={dracula}

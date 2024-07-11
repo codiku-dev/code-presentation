@@ -274,7 +274,12 @@ export function Home() {
       {isPreviewMode
         ? renderWithBackgroundDark(content)
         : renderWithBackgroundLight(content)}
-      <div className="text-xs fixed top-5 left-1/2 transform -translate-x-1/2">
+      <div
+        className={cx(
+          "text-xs fixed top-5 left-1/2 transform -translate-x-1/2",
+          isPreviewMode && "text-white"
+        )}
+      >
         Made with love by{" "}
         <a
           className="underline"
