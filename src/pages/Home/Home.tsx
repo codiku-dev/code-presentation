@@ -22,7 +22,9 @@ export function Home() {
       ? JSON.parse(localStorage.getItem("slideList")!)
       : INITIAL_SLIDES
   );
-  const [currentSlide, setCurrentSlide] = useState<Slide>(slideList[0]);
+  const [currentSlide, setCurrentSlide] = useState<Slide | undefined>(
+    slideList[0]
+  );
   const currentSlideIndex = slideList.findIndex(
     (s) => s.id === currentSlide?.id
   );
