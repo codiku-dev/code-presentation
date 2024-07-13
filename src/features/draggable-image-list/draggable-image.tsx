@@ -6,9 +6,10 @@ export function DraggableImage(p: {
   imgHref: string;
   className?: string;
 }) {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: p.id,
-  });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id: p.id,
+    });
 
   const style = transform
     ? {
@@ -23,11 +24,11 @@ export function DraggableImage(p: {
       {...listeners}
       {...attributes}
       className={cn(
-        " cursor-pointer rounded-md  hover:bg-indigo-400/20  ",
+        " cursor-pointer rounded-md  hover:bg-indigo-400/20 w-20 h-20",
         p.className
       )}
     >
-      <img src={p.imgHref} width={100} height={100} />
+      <img src={p.imgHref} className="w-full h-full" />
     </div>
   );
 }

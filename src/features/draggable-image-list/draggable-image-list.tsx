@@ -1,15 +1,10 @@
 import { DraggableImage } from "./draggable-image";
+import draggableImages from "@/features/draggable-image-list/draggableImages.json";
 
-export const DRAGGABLE_IMAGES: { filePath: string }[] = [
-  { filePath: "/point_left.png" },
-  { filePath: "/point_up.png" },
-  { filePath: "/point_right.png" },
-  { filePath: "/point_down.png" },
-];
 export function DraggableImageList() {
   return (
-    <div className="rounded-md hover:animate-fadeIn03">
-      {DRAGGABLE_IMAGES.map((image) => (
+    <div className="rounded-md hover:animate-fadeIn0 grid grid-cols-2 gap-2 p-4">
+      {draggableImages.map((image) => (
         <DraggableImage
           key={image.filePath}
           id={image.filePath}

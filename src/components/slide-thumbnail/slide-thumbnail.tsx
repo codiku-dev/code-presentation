@@ -43,20 +43,23 @@ export const SlideThumbnail = memo(
   }
 );
 
-const CodeMemoized = memo((p: { code: string }) => (
-  <CodeMirror
-    value={p.code.split("\n").slice(0, 40).join("\n")}
-    style={{
-      userSelect: "none",
-    }}
-    readOnly
-    editable={false}
-    maxHeight="50px"
-    theme={tokyoNight}
-    basicSetup={{
-      lineNumbers: false,
-      foldGutter: false,
-    }}
-    extensions={[javascript({ jsx: true, typescript: true })]}
-  />
-));
+const CodeMemoized = memo(
+  (p: { code: string }) => (
+    <CodeMirror
+      value={p.code.split("\n").slice(0, 40).join("\n")}
+      style={{
+        userSelect: "none",
+      }}
+      readOnly
+      editable={false}
+      maxHeight="50px"
+      theme={tokyoNight}
+      basicSetup={{
+        lineNumbers: false,
+        foldGutter: false,
+      }}
+      extensions={[javascript({ jsx: true, typescript: true })]}
+    />
+  ),
+  (prev, next) => prev.code === next.code
+);
