@@ -45,6 +45,7 @@ export function DroppableSlideLayout(p: {
           <DraggableImage
             key={image.id}
             id={image.id}
+            className={"hover:bg-transparent cursor-auto"}
             imgHref={new URL(image.filePath, import.meta.url).href}
           />
         </div>
