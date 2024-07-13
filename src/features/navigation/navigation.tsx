@@ -1,8 +1,9 @@
 import { cx } from "class-variance-authority";
 import { Plus } from "lucide-react";
-import { SlideThumbnail } from "./slide-thumbnail/slide-thumbnail";
 import { Slide } from "@/types/slide.types";
 import DraggableList from "react-draggable-list";
+import { SlideThumbnail } from "@/components/slide-thumbnail/slide-thumbnail";
+import { SlideAddThumbnail } from "./slide-add-thumbnail";
 
 export function Navigation(p: {
   slideList: Slide[];
@@ -25,7 +26,7 @@ export function Navigation(p: {
     );
   };
   return (
-    <div className="fixed w-44 overflow-y-auto h-[calc(100vh-2rem)] p-4 flex flex-col ">
+    <div className="fixed overflow-y-auto h-[calc(100vh-2rem)] p-4 flex flex-col ">
       <DraggableList<Slide, any, any>
         itemKey={"id"}
         springConfig={{ stiffness: 300, damping: 25, precision: 0.01 }}
@@ -35,29 +36,12 @@ export function Navigation(p: {
           p.onChangeOrder(slides as Slide[]);
         }}
       />
-      <SlideAddButton onClick={p.onClickAdd} />
-    </div>
-  );
-}
-
-const SlideAddButton = (p: { onClick: () => void }) => {
-  return (
-    <div className="rounded-sm h-20 bg-black " onClick={p.onClick}>
-      <div className="p-2">
-        <div className=" flex justify-end">
-          <Plus
-            className=" w-6 self-end text-white     rounded-full   cursor-pointer"
-            size={16}
-            onClick={(e) => {
-              e.stopPropagation();
-              p.onClick();
-            }}
-          />
-        </div>
+      <div className="">
+        <SlideAddThumbnail onClick={p.onClickAdd} />
       </div>
     </div>
   );
-};
+}
 
 type DraggableSlideThumbnailTemplateProps = {
   item: Slide;

@@ -26,7 +26,7 @@ export function DroppableSlideLayout(p: {
     return p.slide.imageList.map((image, index) => {
       return (
         <div
-          className={cx(p.isPreviewMode && "animate-fadeIn")}
+          //className={cx(p.isPreviewMode && "animate-fadeIn")}
           key={image.id}
           style={{
             position: "absolute",
@@ -78,7 +78,10 @@ export function DroppableSlideLayout(p: {
   const droppableSection = (
     <div
       ref={setNodeRef}
-      className={cn("relative h-[90vh] min-w-[70vw]", isOver && "bg-green-800")}
+      className={cn(
+        "relative h-[90vh] min-w-[70vw]",
+        isOver && "bg-purple-300/10"
+      )}
     >
       {p.children}
       {renderDraggedImageList()}

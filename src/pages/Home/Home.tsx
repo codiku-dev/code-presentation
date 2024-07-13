@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Navigation } from "@/features/navigation";
+import { Navigation } from "@/features/navigation/navigation";
 import { SlideInput } from "@/features/slide-input/slide-input";
 import { DroppableSlideLayout } from "@/features/droppable-slide-layout/droppable-slide-layout";
 import { SlidePreview } from "@/features/slide-preview/slide-preview";
@@ -7,13 +7,12 @@ import { cx } from "class-variance-authority";
 import { useEffect, useState } from "react";
 import { INITIAL_SLIDES } from "../../constant";
 import { DraggableImageT, Slide } from "@/types/slide.types";
-import {
-  DRAGGABLE_IMAGES,
-  DraggableImageList,
-} from "@/features/draggable-image-list/draggable-image-list";
+
 import { DndContext, DragEndEvent, pointerWithin } from "@dnd-kit/core";
 import { v4 as uuidv4 } from "uuid";
 import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { cn } from "@/utils";
 export function Home() {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
 
@@ -26,9 +25,12 @@ export function Home() {
     slideList[0]
   );
   const currentSlideIndex = slideList.findIndex(
-    (s) => s.id === currentSlide?.id
+    (s) => s.id == currentSlide?.id
   );
 
+  // console.log("currentSlideIndex", currentSlideIndex);
+  // console.log("currentSlide", currentSlide);
+  // console.log("***", slideList);
   useEffect(() => {
     localStorage.setItem("slideList", JSON.stringify(slideList));
     if (slideList.length === 0) {
@@ -85,14 +87,26 @@ export function Home() {
     }
   };
   const deleteSlide = (slide: Slide) => {
+    const currentDeletingSlideIndex = slideList.findIndex(
+      (s) => s.id === slide.id
+    );
     const newSlideList = [...slideList];
     newSlideList.splice(
-      newSlideList.findIndex((s) => s.id === slide.id),
+      newSlideList.findIndex((s) => s.id == slide.id),
       1
     );
-    if (newSlideList.length > 0 && currentSlideIndex > 0) {
-      setCurrentSlide(newSlideList[newSlideList.length - 1]);
+
+    if (
+      currentDeletingSlideIndex == currentSlideIndex &&
+      newSlideList.length > 0
+    ) {
+      if (currentDeletingSlideIndex == slideList.length - 1) {
+        setCurrentSlide(slideList[currentSlideIndex - 1]);
+      } else {
+        setCurrentSlide(slideList[currentSlideIndex + 1]);
+      }
     }
+
     setSlideList(newSlideList);
   };
 
@@ -237,6 +251,7 @@ export function Home() {
               slideList={slideList}
               currentSlide={currentSlide}
               onClickItem={(slide) => {
+                console.log("click item");
                 setCurrentSlide(slide);
               }}
               onClickAdd={addSlide}
@@ -274,12 +289,33 @@ export function Home() {
       </a>
     </div>
   );
+  const renderArrows = () => {
+    return (
+      <div className="fixed bottom-5 left-1/2 transform -translate-x-1/2 flex items-center space-x-4">
+        <ChevronLeft
+          className={cn(
+            "h-6 w-6 text-gray-300",
+            currentSlideIndex === 0 && "opacity-20 cursor-not-allowed"
+          )}
+        />
+
+        <ChevronRight
+          className={cn(
+            "h-6 w-6 text-gray-300",
+            currentSlideIndex === slideList.length - 1 &&
+              "opacity-20 cursor-not-allowed "
+          )}
+        />
+      </div>
+    );
+  };
   return (
     <div className="w-screen h-full">
       {isPreviewMode
         ? renderWithBackgroundDark(content)
         : renderWithBackgroundLight(content)}
       {!isPreviewMode && madeWithLoveSignature}
+      {isPreviewMode && renderArrows()}
     </div>
   );
 }
