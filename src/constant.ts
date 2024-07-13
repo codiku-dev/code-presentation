@@ -20,7 +20,7 @@ export const INITIAL_SLIDES: Slide[] = [
       {
         id: "04a39ba0-daae-4233-a35f-98a6b871acb9",
         filePath: "/image-panel/point_right.png",
-        x: 400.5938100000003,
+        x: 894.5938100000003,
         y: 306.703125,
       },
     ],
