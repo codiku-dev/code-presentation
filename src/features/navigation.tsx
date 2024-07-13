@@ -2,7 +2,6 @@ import { cx } from "class-variance-authority";
 import { Plus } from "lucide-react";
 import { SlideThumbnail } from "./slide-thumbnail/slide-thumbnail";
 import { Slide } from "@/types/slide.types";
-
 import DraggableList from "react-draggable-list";
 
 export function Navigation(p: {
@@ -13,12 +12,24 @@ export function Navigation(p: {
   onClickDelete: (slide: Slide) => void;
   onChangeOrder: (newSlides: Slide[]) => void;
 }) {
+  const template = (props: any) => {
+    return (
+      <DraggableSlideThumbnailTemplate
+        {...props}
+        onClickItem={p.onClickItem}
+        onClickDelete={p.onClickDelete}
+        currentSlide={p.currentSlide}
+        onClickAdd={p.onClickAdd}
+        onChangeOrder={p.onChangeOrder}
+      />
+    );
+  };
   return (
     <div className="fixed w-44 overflow-y-auto h-[calc(100vh-2rem)] p-4 flex flex-col ">
       <DraggableList<Slide, any, any>
         itemKey={"id"}
         springConfig={{ stiffness: 300, damping: 25, precision: 0.01 }}
-        template={DraggableSlideThumbnailTemplate as any}
+        template={template as any}
         list={p.slideList}
         onMoveEnd={(slides) => {
           p.onChangeOrder(slides as Slide[]);
@@ -28,28 +39,6 @@ export function Navigation(p: {
     </div>
   );
 }
-
-const DraggableSlideThumbnail = (p: {
-  isActive: boolean;
-  code: string;
-  onClick: () => void;
-  onClickTrash: () => void;
-}) => {
-  return (
-    <div
-      className={cx(
-        "hover:ring-2 hover:ring-indigo-500 rounded-sm ",
-        p.isActive ? "ring-4 ring-indigo-500" : ""
-      )}
-    >
-      <SlideThumbnail
-        code={p.code || ""}
-        onClick={p.onClick}
-        onClickTrash={p.onClickTrash}
-      />
-    </div>
-  );
-};
 
 const SlideAddButton = (p: { onClick: () => void }) => {
   return (
@@ -79,13 +68,11 @@ type DraggableSlideThumbnailTemplateProps = {
   onClickDelete: (slide: Slide) => void;
 };
 const DraggableSlideThumbnailTemplate = (
-  p: DraggableSlideThumbnailTemplateProps,
-  context: any
+  p: DraggableSlideThumbnailTemplateProps
 ) => {
   const scale = p.itemSelected * 0.05 + 1;
   const shadow = p.itemSelected * 15 + 1;
   const dragged = p.itemSelected !== 0;
-
   return (
     <div
       className={cx("", { dragged })}
@@ -95,11 +82,11 @@ const DraggableSlideThumbnailTemplate = (
       }}
     >
       <div {...p.dragHandleProps}>
-        <DraggableSlideThumbnail
-          isActive={p.item.id == p.currentSlide?.id}
+        <SlideThumbnail
+          code={p.item.code || ""}
           onClick={() => p.onClickItem(p.item)}
           onClickTrash={() => p.onClickDelete(p.item)}
-          code={p.item.code}
+          isActive={p.item.id == p.currentSlide?.id}
         />
       </div>
     </div>

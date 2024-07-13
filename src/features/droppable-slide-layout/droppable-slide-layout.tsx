@@ -1,16 +1,9 @@
-import { Input } from "@/components/ui/input";
 import { DraggableImageT, Slide } from "@/types/slide.types";
 import { cx } from "class-variance-authority";
 import { Minus, Square, X } from "lucide-react";
-import {
-  DndContext,
-  DragEndEvent,
-  pointerWithin,
-  useDroppable,
-} from "@dnd-kit/core";
+import { DragEndEvent, useDroppable } from "@dnd-kit/core";
 import { DraggableImage } from "../draggable-image-list/draggable-image";
-import { useEffect, useRef, useState } from "react";
-import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
+import { useRef } from "react";
 import { DraggableImageList } from "../draggable-image-list/draggable-image-list";
 import { cn } from "@/utils";
 
@@ -28,22 +21,6 @@ export function DroppableSlideLayout(p: {
     id: "droppable",
   });
   const refLayout = useRef<HTMLDivElement>(null);
-  const [layoutRef, setLayoutRef] = useState<HTMLDivElement | null>(null);
-  const [width, setWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handler = () => {
-      setWidth(window.innerWidth);
-    };
-    window.addEventListener("resize", handler);
-    return () => {
-      window.removeEventListener("resize", handler);
-    };
-  }, []);
-
-  useEffect(() => {
-    setLayoutRef(refLayout.current);
-  }, [refLayout]);
 
   const renderDraggedImageList = () => {
     return p.slide.imageList.map((image, index) => {
@@ -109,7 +86,7 @@ export function DroppableSlideLayout(p: {
   );
 
   const emojiList = (
-    <div className="fixed top-44 right-5  bg-black/5  group rounded-sm  ">
+    <div className="fixed top-1/2 right-5 transform -translate-y-1/2 bg-black/5 group rounded-sm">
       <div className="opacity-0 rounded-sm group-hover:visible group-hover:opacity-100 group">
         <div className="">{!p.isPreviewMode && <DraggableImageList />}</div>
       </div>
