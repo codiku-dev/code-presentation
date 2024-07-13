@@ -2,9 +2,17 @@ import { Input } from "@/components/ui/input";
 import { DraggableImageT, Slide } from "@/types/slide.types";
 import { cx } from "class-variance-authority";
 import { Minus, Square, X } from "lucide-react";
-import { useDroppable } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragEndEvent,
+  pointerWithin,
+  useDroppable,
+} from "@dnd-kit/core";
 import { DraggableImage } from "../draggable-image-list/draggable-image";
 import { useEffect, useRef, useState } from "react";
+import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
+import { DraggableImageList } from "../draggable-image-list/draggable-image-list";
+import { cn } from "@/utils";
 
 export function DroppableSlideLayout(p: {
   children: React.ReactNode;
@@ -14,6 +22,7 @@ export function DroppableSlideLayout(p: {
   onPickLocationForImage: (image: DraggableImageT) => void;
   selectedImage?: DraggableImageT;
   onRightClickPickableImage: (image: DraggableImageT) => void;
+  onDropImage: (event: DragEndEvent) => void;
 }) {
   const { isOver, setNodeRef } = useDroppable({
     id: "droppable",
@@ -21,6 +30,7 @@ export function DroppableSlideLayout(p: {
   const refLayout = useRef<HTMLDivElement>(null);
   const [layoutRef, setLayoutRef] = useState<HTMLDivElement | null>(null);
   const [width, setWidth] = useState(window.innerWidth);
+
   useEffect(() => {
     const handler = () => {
       setWidth(window.innerWidth);
@@ -45,8 +55,8 @@ export function DroppableSlideLayout(p: {
             position: "absolute",
             width: 100,
             height: 100,
-            top: isNaN(Number(image.y)) ? 0 : Number(image.y),
-            left: isNaN(Number(image.x)) ? 0 : Number(image.x),
+            top: Number(image.y),
+            left: Number(image.x),
           }}
           onContextMenu={(e) => {
             if (!p.isPreviewMode) {
@@ -91,28 +101,33 @@ export function DroppableSlideLayout(p: {
   const droppableSection = (
     <div
       ref={setNodeRef}
-      className={cx(
-        "min-h-[760px] overflow-y-hidden ",
-        isOver ? "bg-green-900" : ""
-      )}
+      className={cn("relative h-[90vh] min-w-[70vw]", isOver && "bg-green-800")}
     >
       {p.children}
       {renderDraggedImageList()}
     </div>
   );
+
+  const emojiList = (
+    <div className="fixed top-44 right-5  bg-black/5  group rounded-sm  ">
+      <div className="opacity-0 rounded-sm group-hover:visible group-hover:opacity-100 group">
+        <div className="">{!p.isPreviewMode && <DraggableImageList />}</div>
+      </div>
+    </div>
+  );
   return (
-    <div
-      ref={refLayout}
-      id="parent"
-      style={{
-        left: width / 2 - Number((layoutRef?.offsetWidth || 0) / 2),
-      }}
-      className={cx(
-        " w-[36rem] md:w-[46rem] lg:w-[56rem] xl:w-[66rem] 2xl:w-[76rem] fixed top-14 max-h-[830px]    bg-primary rounded-md  border-2 border-gray-700 p-4 text-white overflow-x-hidden "
-      )}
-    >
-      {header}
-      {droppableSection}
+    <div className="">
+      <div
+        ref={refLayout}
+        className={cn(
+          " bg-primary rounded-md  border-2 border-gray-700 p-4 text-white overflow-x-hidden "
+        )}
+      >
+        {header}
+        {droppableSection}
+      </div>
+
+      {p.slide && emojiList}
     </div>
   );
 }

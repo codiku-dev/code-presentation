@@ -4,11 +4,11 @@ import CodeMirror from "@uiw/react-codemirror";
 import "./slide-input.css";
 import { Slide } from "@/types/slide.types";
 import * as prettier from "prettier";
-import babel from 'prettier/plugins/babel'
-import esTree from 'prettier/plugins/estree'
-
+import babel from "prettier/plugins/babel";
+import esTree from "prettier/plugins/estree";
 
 import { useEffect } from "react";
+import { CODE_FONT_SIZE } from "@/constant";
 export function SlideInput(p: {
   slide: Slide;
   style?: React.CSSProperties;
@@ -34,11 +34,10 @@ export function SlideInput(p: {
     };
   }, [p.slide.code, p.onCodeChange]);
   return (
-    <div className="">
+    <div className="code-text-input">
       <CodeMirror
         value={p.slide.code}
         style={{
-          fontSize: "1rem",
           overflowX: "hidden",
           ...p.style,
         }}

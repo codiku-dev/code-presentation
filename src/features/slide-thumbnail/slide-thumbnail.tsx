@@ -9,7 +9,10 @@ export function SlideThumbnail(p: {
   onClickTrash: () => void;
 }) {
   return (
-    <div className="rounded-sm h-20 overflow-y-hidden bg-black group" onClick={p.onClick}>
+    <div
+      className="rounded-sm h-20 overflow-y-hidden bg-black group"
+      onClick={p.onClick}
+    >
       <div className="p-2 overflow-y-hidden">
         <div className=" opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-end overflow-y-hidden">
           <Trash
@@ -22,24 +25,26 @@ export function SlideThumbnail(p: {
           />
         </div>
         {p.code && (
-          <CodeMirror
-            value={p.code.substring(0, 240).split('\n').slice(0, 8).join('\n')}
-            style={{
-              fontSize: "0.2rem",
-              userSelect: "none",
-              overflowY:"hidden"
-            }}
-            editable={false}
-            maxHeight="50px" 
-            className="overflow-y-hidden"
-            theme={tokyoNight}
-            basicSetup={{
-              lineNumbers: false,
-              foldGutter:false,
-            }}
-            extensions={[javascript({ jsx: true, typescript: true })]}
-
-          />
+          <div className="code-text-thumbnail">
+            <CodeMirror
+              value={p.code
+                .substring(0, 240)
+                .split("\n")
+                .slice(0, 8)
+                .join("\n")}
+              style={{
+                userSelect: "none",
+              }}
+              editable={false}
+              maxHeight="50px"
+              theme={tokyoNight}
+              basicSetup={{
+                lineNumbers: false,
+                foldGutter: false,
+              }}
+              extensions={[javascript({ jsx: true, typescript: true })]}
+            />
+          </div>
         )}
       </div>
     </div>

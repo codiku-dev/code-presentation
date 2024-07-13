@@ -5,7 +5,7 @@ import { DroppableSlideLayout } from "@/features/droppable-slide-layout/droppabl
 import { SlidePreview } from "@/features/slide-preview/slide-preview";
 import { cx } from "class-variance-authority";
 import { useEffect, useState } from "react";
-import { INITIAL_SLIDES } from "./constant";
+import { INITIAL_SLIDES } from "../../constant";
 import { DraggableImageT, Slide } from "@/types/slide.types";
 import {
   DRAGGABLE_IMAGES,
@@ -154,7 +154,45 @@ export function Home() {
       {isPreviewMode ? "Edit" : "Preview"}
     </Button>
   );
+  const dropImage = (event: DragEndEvent) => {
+    if (currentSlide && event.over && event.over.id === "droppable") {
+      // If the id is comming from the list of images, we add it to the current slide
+      if (event.active.id.toString().startsWith("/")) {
+        // add new image to the current slide
+        const droppableRect = event.over.rect;
+        const mouseX = event.active.rect.current.translated?.left;
+        const mouseY = event.active.rect.current.translated?.top;
+        const relativeXToDroppable = mouseX! - droppableRect.left;
+        const relativeYToDroppable = mouseY! - droppableRect.top;
 
+        updateCurrentSlideImageList([
+          ...currentSlide.imageList,
+          {
+            id: uuidv4(),
+            filePath: event.active.id.toString(),
+            x: relativeXToDroppable,
+            y: relativeYToDroppable,
+          },
+        ]);
+      } else {
+        // Just moving the image using the delta
+        const imageIndexToUpdate = currentSlide.imageList.findIndex(
+          (img) => img.id == event.active.id.toString()
+        );
+
+        const imageToUpdate = currentSlide.imageList[imageIndexToUpdate];
+        const updatedImageList = [...currentSlide.imageList];
+
+        updatedImageList[imageIndexToUpdate] = {
+          ...imageToUpdate,
+          x: imageToUpdate.x! + event.delta.x,
+          y: imageToUpdate.y! + event.delta.y,
+        };
+
+        updateCurrentSlideImageList(updatedImageList);
+      }
+    }
+  };
   const content = (
     <div className="flex gap-2 h-full">
       <div className="w-full flex justify-center ">
@@ -172,6 +210,7 @@ export function Home() {
                 newSlideList[currentSlideIndex].imageList.push(image);
                 setSlideList(newSlideList);
               }}
+              onDropImage={dropImage}
             >
               {isPreviewMode ? (
                 <SlidePreview slide={currentSlide} />
@@ -184,63 +223,10 @@ export function Home() {
             </DroppableSlideLayout>
           )}
         </div>
+        {slideList.length > 0 && buttonMode}
       </div>
-      {slideList.length > 0 && buttonMode}
-      {slideList.length > 0 && (
-        <div className="fixed top-44 right-5  bg-black/5  group rounded-sm  ">
-          <div className="opacity-0 rounded-sm group-hover:visible group-hover:opacity-100 group">
-            <div className="">{!isPreviewMode && <DraggableImageList />}</div>
-          </div>
-        </div>
-      )}
     </div>
   );
-
-  const dropImage = (event: DragEndEvent) => {
-    if (!currentSlide) return;
-    const SHIFTX = -386;
-    const SHIFTY = 118;
-    // If the id is comming from the list of images, we add it to the current slide
-    if (event.active.id.toString().startsWith("/")) {
-      const imageIndex = DRAGGABLE_IMAGES.findIndex(
-        (image) => image.filePath === event.active.id.toString()
-      );
-
-      const xFromBorderRight =
-        Number(event.active.rect.current.translated?.right) -
-        Number(event.active.rect.current.initial?.right);
-
-      const yFromBorderTop =
-        Number(event.active.rect.current.translated?.top) -
-        Number(event.active.rect.current.initial?.top);
-      // add new image to the current slide
-      updateCurrentSlideImageList([
-        ...currentSlide.imageList,
-        {
-          id: uuidv4(),
-          filePath: event.active.id.toString(),
-          x: window.innerWidth + xFromBorderRight + SHIFTX,
-
-          y: yFromBorderTop + (SHIFTY + imageIndex * 100),
-        },
-      ]);
-    } else {
-      const imageIndexToUpdate = currentSlide.imageList.findIndex(
-        (img) => img.id == event.active.id.toString()
-      );
-
-      const imageToUpdate = currentSlide.imageList[imageIndexToUpdate];
-      const updatedImageList = [...currentSlide.imageList];
-
-      updatedImageList[imageIndexToUpdate] = {
-        ...imageToUpdate,
-        x: imageToUpdate.x! + event.delta.x,
-        y: imageToUpdate.y! + event.delta.y,
-      };
-
-      updateCurrentSlideImageList(updatedImageList);
-    }
-  };
 
   const renderWithBackgroundLight = (children: React.ReactNode) => {
     return (
@@ -269,27 +255,31 @@ export function Home() {
       </div>
     );
   };
+
+  const madeWithLoveSignature = (
+    <div
+      className={cx(
+        "text-xs fixed top-5 left-1/2 transform -translate-x-1/2",
+        isPreviewMode && "text-white"
+      )}
+    >
+      Made with love by{" "}
+      <a
+        className="underline"
+        href="https://twitter.com/codiku_dev"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        @codiku_dev
+      </a>
+    </div>
+  );
   return (
     <div className="w-screen h-full">
       {isPreviewMode
         ? renderWithBackgroundDark(content)
         : renderWithBackgroundLight(content)}
-      <div
-        className={cx(
-          "text-xs fixed top-5 left-1/2 transform -translate-x-1/2",
-          isPreviewMode && "text-white"
-        )}
-      >
-        Made with love by{" "}
-        <a
-          className="underline"
-          href="https://twitter.com/codiku_dev"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          @codiku_dev
-        </a>
-      </div>
+      {!isPreviewMode && madeWithLoveSignature}
     </div>
   );
 }

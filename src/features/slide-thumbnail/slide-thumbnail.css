@@ -1,14 +1,4 @@
-.ͼ14 {
-  background-color: transparent !important;
-  color: transparent !important;
-}
-.ͼ3 .cm-gutters {
-  background-color: transparent !important;
-}
-.cm-editor {
-  background-color: transparent !important;
-}
-
-.cm-scroller {
-  overflow-x: hidden !important;
+.code-text-thumbnail {
+  font-size: 8px !important;
+  line-height: 10px !important;
 }
