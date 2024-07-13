@@ -100,7 +100,8 @@ export function DroppableSlideLayout(p: {
       <div
         ref={refLayout}
         className={cn(
-          " bg-primary rounded-md  border-2 border-gray-700 p-4 text-white overflow-x-hidden "
+          "  rounded-md  border-2 border-gray-700 p-4 text-white overflow-x-hidden ",
+          p.isPreviewMode ? "bg-black/60" : "bg-primary"
         )}
       >
         {header}
