@@ -57,6 +57,7 @@
     "npm": "^10.8.1",
     "prettier-format": "^4.0.0",
     "react": "^18.2.0",
+    "react-clipboardjs-copy": "^2.0.2",
     "react-dom": "^18.2.0",
     "react-draggable-list": "^4.2.1",
     "react-hook-form": "^7.45.0",

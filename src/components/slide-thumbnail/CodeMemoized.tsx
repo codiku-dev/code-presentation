@@ -3,7 +3,6 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { darcula as theme } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 export const CodeMemoized = memo((p: { code: string }) => {
-  console.log("RENDER code mirror");
   return (
     <SyntaxHighlighter
       customStyle={{ backgroundColor: "transparent" }}

@@ -1,11 +1,11 @@
-import { cx } from "class-variance-authority";
-import { Slide } from "@/types/slide.types";
-import DraggableList from "react-draggable-list";
 import { SlideThumbnail } from "@/components/slide-thumbnail/slide-thumbnail";
+import { Slide } from "@/types/slide.types";
+import { cx } from "class-variance-authority";
+import { useCallback } from "react";
+import DraggableList from "react-draggable-list";
 import { SlideAddThumbnail } from "./slide-add-thumbnail";
-import { memo, useCallback } from "react";
 
-export const Navigation = memo(
+export const Navigation = (
   (p: {
     slideList: Slide[];
     currentSlide?: Slide;
@@ -14,7 +14,6 @@ export const Navigation = memo(
     onClickDelete: (slide: Slide) => void;
     onChangeOrder: (newSlides: Slide[]) => void;
   }) => {
-    console.log("render nav");
     const template = (props: any) => {
       return (
         <DraggableSlideThumbnailTemplate
@@ -42,12 +41,6 @@ export const Navigation = memo(
           <SlideAddThumbnail onClick={p.onClickAdd} />
         </div>
       </div>
-    );
-  },
-  (prev, next) => {
-    return (
-      prev.currentSlide?.id === next.currentSlide?.id &&
-      prev.slideList.length === next.slideList.length
     );
   }
 );

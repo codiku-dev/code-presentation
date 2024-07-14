@@ -1,18 +1,19 @@
 import { Button } from "@/components/ui/button";
+import { DroppableSlideLayout } from "@/features/droppable-slide-layout/droppable-slide-layout";
 import { Navigation } from "@/features/navigation/navigation";
 import { SlideInput } from "@/features/slide-input/slide-input";
-import { DroppableSlideLayout } from "@/features/droppable-slide-layout/droppable-slide-layout";
 import { SlidePreview } from "@/features/slide-preview/slide-preview";
+import { DraggableImageT, Slide } from "@/types/slide.types";
 import { cx } from "class-variance-authority";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { INITIAL_SLIDES } from "../../constant";
-import { DraggableImageT, Slide } from "@/types/slide.types";
 
+import { cn } from "@/utils";
 import { DndContext, DragEndEvent, pointerWithin } from "@dnd-kit/core";
-import { v4 as uuidv4 } from "uuid";
 import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/utils";
+import { v4 as uuidv4 } from "uuid";
+
 export function Home() {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
 
@@ -28,9 +29,7 @@ export function Home() {
     return slideList.findIndex((s) => s.id == currentSlide?.id);
   }, [slideList, currentSlide]);
 
-  // console.log("currentSlideIndex", currentSlideIndex);
-  // console.log("currentSlide", currentSlide);
-  // console.log("***", slideList);
+
   useEffect(() => {
     localStorage.setItem("slideList", JSON.stringify(slideList));
     if (slideList.length === 0) {
@@ -97,6 +96,15 @@ export function Home() {
       setCurrentSlide(newSlide);
     }
   }, [slideList]);
+
+  const addNewCurrentSlideCopy = useCallback((code: string) => {
+    if (currentSlide) {
+      const slideListToUpdate = [...slideList]
+      const currentSlideIndex = slideListToUpdate.findIndex(slide => slide.id === currentSlide.id);
+      slideListToUpdate.splice(currentSlideIndex + 1, 0, { ...currentSlide, code, id: uuidv4(), imageList: currentSlide.imageList.map((image) => { return { ...image, id: uuidv4() } }) });
+      setSlideList(slideListToUpdate);
+    }
+  }, [slideList, currentSlide]);
 
   const deleteSlide = useCallback(
     (slide: Slide) => {
@@ -251,6 +259,7 @@ export function Home() {
                 <SlideInput
                   slide={currentSlide}
                   onCodeChange={updateCurrentSlideCode}
+                  onCutAndCreateSlide={addNewCurrentSlideCopy}
                 />
               )}
             </DroppableSlideLayout>
@@ -322,7 +331,7 @@ export function Home() {
           className={cn(
             "h-6 w-6 text-gray-300",
             currentSlideIndex === slideList.length - 1 &&
-              "opacity-20 cursor-not-allowed "
+            "opacity-20 cursor-not-allowed "
           )}
         />
       </div>
