@@ -9,7 +9,7 @@ import "shiki-magic-move/dist/style.css";
 import { ShikiMagicMove } from "shiki-magic-move/react";
 const CODE_THEME: BundledTheme = "dracula";
 
-export function SlidePreview(p: { code: string }) {
+export function SlidePreview(p: { slide: Slide }) {
   const [highlighter, setHighlighter] = useState<HighlighterCore>();
 
   const renderAnimatedCode = () => {
@@ -19,7 +19,7 @@ export function SlidePreview(p: { code: string }) {
           lang="tsx"
           theme={CODE_THEME}
           highlighter={highlighter!}
-          code={p.code || ""}
+          code={p.slide.code || ""}
           className={"leading-[26px] text-[20px]"}
           options={{
             duration: 800,
