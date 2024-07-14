@@ -20,7 +20,7 @@ export function SlidePreview(p: { slide: Slide }) {
           theme={CODE_THEME}
           highlighter={highlighter!}
           code={p.slide.code || ""}
-          className={"leading-[26px] text-[20px]"}
+          className={"leading-[28px] text-[20px]"}
           options={{
             duration: 800,
             stagger: 0.3,

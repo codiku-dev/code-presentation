@@ -29,7 +29,6 @@ export function Home() {
     return slideList.findIndex((s) => s.id == currentSlide?.id);
   }, [slideList, currentSlide]);
 
-
   useEffect(() => {
     localStorage.setItem("slideList", JSON.stringify(slideList));
     if (slideList.length === 0) {
@@ -97,14 +96,26 @@ export function Home() {
     }
   }, [slideList]);
 
-  const addNewCurrentSlideCopy = useCallback((code: string) => {
-    if (currentSlide) {
-      const slideListToUpdate = [...slideList]
-      const currentSlideIndex = slideListToUpdate.findIndex(slide => slide.id === currentSlide.id);
-      slideListToUpdate.splice(currentSlideIndex + 1, 0, { ...currentSlide, code, id: uuidv4(), imageList: currentSlide.imageList.map((image) => { return { ...image, id: uuidv4() } }) });
-      setSlideList(slideListToUpdate);
-    }
-  }, [slideList, currentSlide]);
+  const addNewCurrentSlideCopy = useCallback(
+    (code: string) => {
+      if (currentSlide) {
+        const slideListToUpdate = [...slideList];
+        const currentSlideIndex = slideListToUpdate.findIndex(
+          (slide) => slide.id === currentSlide.id
+        );
+        slideListToUpdate.splice(currentSlideIndex + 1, 0, {
+          ...currentSlide,
+          code,
+          id: uuidv4(),
+          imageList: currentSlide.imageList.map((image) => {
+            return { ...image, id: uuidv4() };
+          }),
+        });
+        setSlideList(slideListToUpdate);
+      }
+    },
+    [slideList, currentSlide]
+  );
 
   const deleteSlide = useCallback(
     (slide: Slide) => {
@@ -319,7 +330,7 @@ export function Home() {
   );
   const renderArrows = () => {
     return (
-      <div className="fixed bottom-5 left-1/2 transform -translate-x-1/2 flex items-center space-x-4">
+      <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 flex items-center space-x-4">
         <ChevronLeft
           className={cn(
             "h-6 w-6 text-gray-300",
@@ -331,7 +342,7 @@ export function Home() {
           className={cn(
             "h-6 w-6 text-gray-300",
             currentSlideIndex === slideList.length - 1 &&
-            "opacity-20 cursor-not-allowed "
+              "opacity-20 cursor-not-allowed "
           )}
         />
       </div>
