@@ -3,7 +3,7 @@ import { Slide } from "@/types/slide.types";
 import DraggableList from "react-draggable-list";
 import { SlideThumbnail } from "@/components/slide-thumbnail/slide-thumbnail";
 import { SlideAddThumbnail } from "./slide-add-thumbnail";
-import { memo } from "react";
+import { memo, useCallback } from "react";
 
 export const Navigation = memo(
   (p: {
@@ -45,7 +45,10 @@ export const Navigation = memo(
     );
   },
   (prev, next) => {
-    return prev.currentSlide?.id === next.currentSlide?.id;
+    return (
+      prev.currentSlide?.id === next.currentSlide?.id &&
+      prev.slideList.length === next.slideList.length
+    );
   }
 );
 
@@ -63,6 +66,14 @@ const DraggableSlideThumbnailTemplate = (
   const scale = p.itemSelected * 0.05 + 1;
   const shadow = p.itemSelected * 15 + 1;
   const dragged = p.itemSelected !== 0;
+
+  const handleClick = useCallback(() => {
+    p.onClickItem(p.item);
+  }, [p.item.id]);
+
+  const handleClickTrash = useCallback(() => {
+    p.onClickDelete(p.item);
+  }, [p.item.id]);
   return (
     <div
       className={cx("", { dragged })}
@@ -74,8 +85,8 @@ const DraggableSlideThumbnailTemplate = (
       <div {...p.dragHandleProps}>
         <SlideThumbnail
           code={p.item.code || ""}
-          onClick={() => p.onClickItem(p.item)}
-          onClickTrash={() => p.onClickDelete(p.item)}
+          onClick={handleClick}
+          onClickTrash={handleClickTrash}
           isActive={p.item.id == p.currentSlide?.id}
         />
       </div>

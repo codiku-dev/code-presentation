@@ -261,6 +261,9 @@ export function Home() {
     </div>
   );
 
+  const setCurrentSlideCallback = useCallback((slide: Slide | undefined) => {
+    setCurrentSlide(slide);
+  }, []);
   const renderWithBackgroundLight = (children: React.ReactNode) => {
     return (
       <div className="  h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
@@ -269,7 +272,7 @@ export function Home() {
             <Navigation
               slideList={slideList}
               currentSlide={currentSlide}
-              onClickItem={setCurrentSlide}
+              onClickItem={setCurrentSlideCallback}
               onClickAdd={addSlide}
               onClickDelete={deleteSlide}
               onChangeOrder={setSlideList}

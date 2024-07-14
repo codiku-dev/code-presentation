@@ -5,6 +5,7 @@ import "./slide-thumbnail.css";
 import { Trash } from "lucide-react";
 import { cn } from "@/utils";
 import { memo } from "react";
+import { CodeMemoized } from "./CodeMemoized";
 export const SlideThumbnail = memo(
   (p: {
     code: string;
@@ -40,26 +41,6 @@ export const SlideThumbnail = memo(
         </div>
       </div>
     );
-  }
-);
-
-const CodeMemoized = memo(
-  (p: { code: string }) => (
-    <CodeMirror
-      value={p.code.split("\n").slice(0, 40).join("\n")}
-      style={{
-        userSelect: "none",
-      }}
-      readOnly
-      editable={false}
-      maxHeight="50px"
-      theme={tokyoNight}
-      basicSetup={{
-        lineNumbers: false,
-        foldGutter: false,
-      }}
-      extensions={[javascript({ jsx: true, typescript: true })]}
-    />
-  ),
+  },
   (prev, next) => prev.code === next.code
 );
