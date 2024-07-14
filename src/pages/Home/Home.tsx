@@ -4,7 +4,7 @@ import { SlideInput } from "@/features/slide-input/slide-input";
 import { DroppableSlideLayout } from "@/features/droppable-slide-layout/droppable-slide-layout";
 import { SlidePreview } from "@/features/slide-preview/slide-preview";
 import { cx } from "class-variance-authority";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { INITIAL_SLIDES } from "../../constant";
 import { DraggableImageT, Slide } from "@/types/slide.types";
 
@@ -24,9 +24,9 @@ export function Home() {
   const [currentSlide, setCurrentSlide] = useState<Slide | undefined>(
     slideList[0]
   );
-  const currentSlideIndex = slideList.findIndex(
-    (s) => s.id == currentSlide?.id
-  );
+  const currentSlideIndex = useMemo(() => {
+    return slideList.findIndex((s) => s.id == currentSlide?.id);
+  }, [slideList, currentSlide]);
 
   // console.log("currentSlideIndex", currentSlideIndex);
   // console.log("currentSlide", currentSlide);
@@ -38,23 +38,34 @@ export function Home() {
     }
   }, [slideList]);
 
-  const updateCurrentSlideCode = (code: string) => {
-    const newSlideList = [...slideList];
-    newSlideList[currentSlideIndex].code = code;
-    setSlideList(newSlideList);
-  };
-  const updateCurrentSlideFilename = (filename: string) => {
-    const newSlideList = [...slideList];
-    newSlideList[currentSlideIndex].fileName = filename;
-    setSlideList(newSlideList);
-  };
+  const updateCurrentSlideCode = useCallback(
+    (code: string) => {
+      const newSlideList = [...slideList];
+      newSlideList[currentSlideIndex].code = code;
+      setSlideList(newSlideList);
+    },
+    [slideList, currentSlideIndex]
+  );
 
-  const updateCurrentSlideImageList = (imageList: DraggableImageT[]) => {
-    const newSlideList = [...slideList];
-    newSlideList[currentSlideIndex].imageList = imageList;
-    setSlideList(newSlideList);
-  };
-  const addSlide = () => {
+  const updateCurrentSlideFilename = useCallback(
+    (filename: string) => {
+      const newSlideList = [...slideList];
+      newSlideList[currentSlideIndex].fileName = filename;
+      setSlideList(newSlideList);
+    },
+    [slideList, currentSlideIndex]
+  );
+
+  const updateCurrentSlideImageList = useCallback(
+    (imageList: DraggableImageT[]) => {
+      const newSlideList = [...slideList];
+      newSlideList[currentSlideIndex].imageList = imageList;
+      setSlideList(newSlideList);
+    },
+    [slideList, currentSlideIndex]
+  );
+
+  const addSlide = useCallback(() => {
     if (slideList.length === 0) {
       const newSlide: Slide = {
         fileName: "code.tsx",
@@ -85,45 +96,53 @@ export function Home() {
       setSlideList([...slideList, newSlide]);
       setCurrentSlide(newSlide);
     }
-  };
-  const deleteSlide = (slide: Slide) => {
-    const currentDeletingSlideIndex = slideList.findIndex(
-      (s) => s.id === slide.id
-    );
-    const newSlideList = [...slideList];
-    newSlideList.splice(
-      newSlideList.findIndex((s) => s.id == slide.id),
-      1
-    );
+  }, [slideList]);
 
-    if (
-      currentDeletingSlideIndex == currentSlideIndex &&
-      newSlideList.length > 0
-    ) {
-      if (currentDeletingSlideIndex == slideList.length - 1) {
-        setCurrentSlide(slideList[currentSlideIndex - 1]);
-      } else {
-        setCurrentSlide(slideList[currentSlideIndex + 1]);
+  const deleteSlide = useCallback(
+    (slide: Slide) => {
+      const currentDeletingSlideIndex = slideList.findIndex(
+        (s) => s.id === slide.id
+      );
+      const newSlideList = [...slideList];
+      newSlideList.splice(
+        newSlideList.findIndex((s) => s.id == slide.id),
+        1
+      );
+
+      if (
+        currentDeletingSlideIndex == currentSlideIndex &&
+        newSlideList.length > 0
+      ) {
+        if (currentDeletingSlideIndex == slideList.length - 1) {
+          setCurrentSlide(slideList[currentSlideIndex - 1]);
+        } else {
+          setCurrentSlide(slideList[currentSlideIndex + 1]);
+        }
       }
-    }
 
-    setSlideList(newSlideList);
-  };
+      setSlideList(newSlideList);
+    },
+    [slideList, currentSlideIndex]
+  );
 
-  const deleteImageFromCurrentSlide = (image: DraggableImageT) => {
-    const newSlideList = [...slideList];
-    newSlideList[currentSlideIndex].imageList = newSlideList[
-      currentSlideIndex
-    ].imageList.filter((img) => img.id !== image.id);
-    setSlideList(newSlideList);
-  };
-  const goToPreviousSlide = () => {
+  const deleteImageFromCurrentSlide = useCallback(
+    (image: DraggableImageT) => {
+      const newSlideList = [...slideList];
+      newSlideList[currentSlideIndex].imageList = newSlideList[
+        currentSlideIndex
+      ].imageList.filter((img) => img.id !== image.id);
+      setSlideList(newSlideList);
+    },
+    [slideList, currentSlideIndex]
+  );
+
+  const goToPreviousSlide = useCallback(() => {
     setCurrentSlide(slideList[currentSlideIndex - 1]);
-  };
+  }, [slideList, currentSlideIndex]);
 
-  const goToNextSlide = () => {
+  const goToNextSlide = useCallback(() => {
     setCurrentSlide(slideList[currentSlideIndex + 1]);
-  };
+  }, [slideList, currentSlideIndex]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -250,10 +269,7 @@ export function Home() {
             <Navigation
               slideList={slideList}
               currentSlide={currentSlide}
-              onClickItem={(slide) => {
-                console.log("click item");
-                setCurrentSlide(slide);
-              }}
+              onClickItem={setCurrentSlide}
               onClickAdd={addSlide}
               onClickDelete={deleteSlide}
               onChangeOrder={setSlideList}

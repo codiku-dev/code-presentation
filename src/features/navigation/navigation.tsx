@@ -1,47 +1,53 @@
 import { cx } from "class-variance-authority";
-import { Plus } from "lucide-react";
 import { Slide } from "@/types/slide.types";
 import DraggableList from "react-draggable-list";
 import { SlideThumbnail } from "@/components/slide-thumbnail/slide-thumbnail";
 import { SlideAddThumbnail } from "./slide-add-thumbnail";
+import { memo } from "react";
 
-export function Navigation(p: {
-  slideList: Slide[];
-  currentSlide?: Slide;
-  onClickItem: (slide: Slide) => void;
-  onClickAdd: () => void;
-  onClickDelete: (slide: Slide) => void;
-  onChangeOrder: (newSlides: Slide[]) => void;
-}) {
-  const template = (props: any) => {
+export const Navigation = memo(
+  (p: {
+    slideList: Slide[];
+    currentSlide?: Slide;
+    onClickItem: (slide: Slide) => void;
+    onClickAdd: () => void;
+    onClickDelete: (slide: Slide) => void;
+    onChangeOrder: (newSlides: Slide[]) => void;
+  }) => {
+    console.log("render nav");
+    const template = (props: any) => {
+      return (
+        <DraggableSlideThumbnailTemplate
+          {...props}
+          onClickItem={p.onClickItem}
+          onClickDelete={p.onClickDelete}
+          currentSlide={p.currentSlide}
+          onClickAdd={p.onClickAdd}
+          onChangeOrder={p.onChangeOrder}
+        />
+      );
+    };
     return (
-      <DraggableSlideThumbnailTemplate
-        {...props}
-        onClickItem={p.onClickItem}
-        onClickDelete={p.onClickDelete}
-        currentSlide={p.currentSlide}
-        onClickAdd={p.onClickAdd}
-        onChangeOrder={p.onChangeOrder}
-      />
-    );
-  };
-  return (
-    <div className="fixed overflow-y-auto h-[calc(100vh-2rem)] p-4 flex flex-col ">
-      <DraggableList<Slide, any, any>
-        itemKey={"id"}
-        springConfig={{ stiffness: 300, damping: 25, precision: 0.01 }}
-        template={template as any}
-        list={p.slideList}
-        onMoveEnd={(slides) => {
-          p.onChangeOrder(slides as Slide[]);
-        }}
-      />
-      <div className="">
-        <SlideAddThumbnail onClick={p.onClickAdd} />
+      <div className="fixed overflow-y-auto h-[calc(100vh-2rem)] p-4 flex flex-col ">
+        <DraggableList<Slide, any, any>
+          itemKey={"id"}
+          springConfig={{ stiffness: 300, damping: 25, precision: 0.01 }}
+          template={template as any}
+          list={p.slideList}
+          onMoveEnd={(slides) => {
+            p.onChangeOrder(slides as Slide[]);
+          }}
+        />
+        <div className="">
+          <SlideAddThumbnail onClick={p.onClickAdd} />
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  },
+  (prev, next) => {
+    return prev.currentSlide?.id === next.currentSlide?.id;
+  }
+);
 
 type DraggableSlideThumbnailTemplateProps = {
   item: Slide;
