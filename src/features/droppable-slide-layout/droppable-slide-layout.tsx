@@ -91,9 +91,9 @@ export function DroppableSlideLayout(p: {
 
   const emojiList = (
     <div className="fixed top-1/2 right-5 transform -translate-y-1/2 bg-black/5 group rounded-sm">
-      <div className="opacity-0 rounded-sm group-hover:visible group-hover:opacity-100 group">
-        <div className="">{!p.isPreviewMode && <DraggableImageList />}</div>
-      </div>
+      {/* <div className="opacity-0 rounded-sm group-hover:visible group-hover:opacity-100 group"> */}
+      <div className="">{!p.isPreviewMode && <DraggableImageList />}</div>
+      {/* </div> */}
     </div>
   );
   return (
