@@ -1,12 +1,12 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
-import { INITIAL_SLIDES } from "../../constant";
+import { DEFAULT_SLIDE_LIST } from "../../constant";
 import { DraggableImageT, Slide } from "../../types/slide.types";
 import { v4 as uuidv4 } from "uuid";
 export const useSlides = () => {
   const [slideList, setSlideList] = useState<Slide[]>(
     localStorage.getItem("slideList")
       ? JSON.parse(localStorage.getItem("slideList")!)
-      : INITIAL_SLIDES
+      : DEFAULT_SLIDE_LIST
   );
   const [currentSlide, setCurrentSlide] = useState<Slide | undefined>(
     slideList[0]

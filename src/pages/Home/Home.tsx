@@ -6,7 +6,7 @@ import { SlidePreview } from "@/features/slide-preview/slide-preview";
 import { Slide } from "@/types/slide.types";
 import { cx } from "class-variance-authority";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSlides } from "@/features/navigation/use-slides";
+import { useSlides } from "@/assets/hooks/use-slides";
 import { cn } from "@/utils";
 import { DndContext, DragEndEvent, pointerWithin } from "@dnd-kit/core";
 import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";

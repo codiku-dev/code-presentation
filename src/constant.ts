@@ -1,6 +1,6 @@
 import { Slide } from "@/types/slide.types";
 export const CODE_FONT_SIZE = "1rem";
-export const INITIAL_SLIDES: Slide[] = [
+export const DEFAULT_SLIDE_LIST: Slide[] = [
   {
     fileName: "code.tsx",
     code: 'function firstTimeUsingCodePrez() {\n              console.log("You can format with ctrl + s")\n \n}\n',
