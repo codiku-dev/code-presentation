@@ -23,6 +23,9 @@ dependencies:
   '@hookstate/core':
     specifier: ^4.0.1
     version: 4.0.1(react@18.2.0)
+  '@hookstate/subscribable':
+    specifier: ^4.0.0
+    version: 4.0.0(@hookstate/core@4.0.1)
   '@lezer/highlight':
     specifier: ^1.2.0
     version: 1.2.0
@@ -893,6 +896,14 @@ packages:
       react: ^16.8.6 || ^17.0.0 || ^18.0.0
     dependencies:
       react: 18.2.0
+    dev: false
+
+  /@hookstate/subscribable@4.0.0(@hookstate/core@4.0.1):
+    resolution: {integrity: sha512-IBvb4sfQ99cUmHpPjLbM0u4jluU6Ou0e9hUGvk9vHYPK8zbQmvUV+uz0KfV1wqGow3YqIrtiUJ4Jjebeg57JVw==}
+    peerDependencies:
+      '@hookstate/core': ^4.0.0
+    dependencies:
+      '@hookstate/core': 4.0.1(react@18.2.0)
     dev: false
 
   /@humanwhocodes/config-array@0.11.14:
