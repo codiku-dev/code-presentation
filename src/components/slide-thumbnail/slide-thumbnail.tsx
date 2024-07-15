@@ -1,11 +1,9 @@
-import { javascript } from "@codemirror/lang-javascript";
-import { tokyoNight } from "@uiw/codemirror-theme-tokyo-night";
-import CodeMirror from "@uiw/react-codemirror";
+import { memo } from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { darcula as theme } from "react-syntax-highlighter/dist/esm/styles/prism";
 import "./slide-thumbnail.css";
 import { Trash } from "lucide-react";
 import { cn } from "@/utils";
-import { memo } from "react";
-import { CodeMemoized } from "./CodeMemoized";
 export const SlideThumbnail = memo(
   (p: {
     code: string;
@@ -35,7 +33,7 @@ export const SlideThumbnail = memo(
           </div>
           {p.code && (
             <div className="code-text-thumbnail">
-              <CodeMemoized code={p.code} />
+              <SyntaxHighlighterMemoized code={p.code} />
             </div>
           )}
         </div>
@@ -44,3 +42,17 @@ export const SlideThumbnail = memo(
   },
   (prev, next) => prev.code === next.code
 );
+
+
+
+export const SyntaxHighlighterMemoized = memo((p: { code: string }) => {
+  return (
+    <SyntaxHighlighter
+      customStyle={{ backgroundColor: "transparent" }}
+      language="tsx"
+      style={theme}
+    >
+      {p.code}
+    </SyntaxHighlighter>
+  );
+});
