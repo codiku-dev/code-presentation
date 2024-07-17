@@ -3,14 +3,14 @@ import { DroppableSlideLayout } from "@/features/droppable-slide-layout/droppabl
 import { Navigation } from "@/features/navigation/navigation";
 import { SlideInput } from "@/features/slide-input/slide-input";
 import { SlidePreview } from "@/features/slide-preview/slide-preview";
+import { useSlidesStore } from "@/store/use-slides-store";
 import { Slide } from "@/types/slide.types";
-import { cx } from "class-variance-authority";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSlides } from "@/assets/hooks/use-slides";
 import { cn } from "@/utils";
 import { DndContext, DragEndEvent, pointerWithin } from "@dnd-kit/core";
 import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
+import { cx } from "class-variance-authority";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 export function Home() {
@@ -30,7 +30,7 @@ export function Home() {
     deleteImageFromCurrentSlide,
     goToPreviousSlide,
     goToNextSlide,
-  } = useSlides();
+  } = useSlidesStore();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

@@ -1,6 +1,7 @@
 import { Home } from "@/pages/Home/Home";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster } from "./components/ui/toaster";
+import Sandbox from "./pages/Sandbox";
 import { ROUTES } from "./router";
 export function App() {
   return (
@@ -9,6 +10,7 @@ export function App() {
       <BrowserRouter>
         <Routes>
           <Route path={ROUTES.home} element={<Home />} />
+          <Route path={ROUTES.sandbox} element={<Sandbox />} />
           <Route path="*" element={<div>Not found</div>} />
         </Routes>
       </BrowserRouter>
