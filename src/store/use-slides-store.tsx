@@ -25,8 +25,6 @@ type Store = {
 
 
 
-
-
 const useSlidesStore = create(devtools(persist(subscribeWithSelector<Store>((set, get) => ({
 
   //STATE
@@ -172,13 +170,6 @@ const useSlidesStore = create(devtools(persist(subscribeWithSelector<Store>((set
   name: 'slideList',
 })))
 
-// SYNCHRONOUS EFFECTS
-
-// useSlidesStore.subscribe(({  slideList }) => currentSlide, function updateIndex() {
-//   const { slideList, currentSlide } = useSlidesStore.getState()
-//   const newSlideIndex = slideList.findIndex(s => s.id === currentSlide?.id)
-//   useSlidesStore.setState({ currentSlideIndex: newSlideIndex, currentSlide: slideList[newSlideIndex] })
-// })
 
 
 export { useSlidesStore };
