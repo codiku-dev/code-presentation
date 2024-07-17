@@ -55,7 +55,7 @@ const useSlidesStore = create(devtools(persist(subscribeWithSelector<Store>((set
     if (currentSlide) {
       const newSlideList = [...slideList];
       newSlideList[currentSlideIndex].imageList = imageList;
-      set({ slideList: newSlideList, currentSlide: newSlideList[currentSlideIndex] });
+      set({ slideList: newSlideList });
     }
   },
 
@@ -162,7 +162,7 @@ const useSlidesStore = create(devtools(persist(subscribeWithSelector<Store>((set
 useSlidesStore.subscribe(({ currentSlide, slideList }) => currentSlide, function updateIndex() {
   const { slideList, currentSlide } = useSlidesStore.getState()
   const newSlideIndex = slideList.findIndex(s => s.id === currentSlide?.id)
-  useSlidesStore.setState({ currentSlideIndex: newSlideIndex })
+  useSlidesStore.setState({ currentSlideIndex: newSlideIndex, currentSlide: slideList[newSlideIndex] })
 })
 
 
