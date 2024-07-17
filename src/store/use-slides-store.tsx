@@ -1,7 +1,6 @@
-import { DEFAULT_SLIDE_LIST } from "@/constant";
 import { v4 as uuidv4 } from "uuid";
 import { create } from 'zustand';
-import { subscribeWithSelector } from 'zustand/middleware';
+import { devtools, persist, subscribeWithSelector } from 'zustand/middleware';
 import { DraggableImageT, Slide } from "../types/slide.types";
 
 
@@ -23,19 +22,17 @@ type Store = {
   setCurrentSlide: (slide?: Slide) => void;
 }
 
-const INITIAL_SLIDES = localStorage.getItem("slideList")
-  ? JSON.parse(localStorage.getItem("slideList")!)
-  : DEFAULT_SLIDE_LIST;
 
 
 
-const useSlidesStore = create(subscribeWithSelector<Store>((set, get) => ({
+
+const useSlidesStore = create(devtools(persist(subscribeWithSelector<Store>((set, get) => ({
 
   //STATE
 
-  slideList: INITIAL_SLIDES,
-  currentSlide: INITIAL_SLIDES[0],
-  currentSlideIndex: 0,
+  slideList: [],
+  currentSlide: undefined,
+  currentSlideIndex: -1,
 
   // SYNCHRONOUS ACTIONS
 
@@ -54,10 +51,12 @@ const useSlidesStore = create(subscribeWithSelector<Store>((set, get) => ({
   },
 
   updateCurrentSlideImageList: (imageList: DraggableImageT[]) => {
-    const { slideList, currentSlideIndex } = get();
-    const newSlideList = [...slideList];
-    newSlideList[currentSlideIndex].imageList = imageList;
-    set({ slideList: newSlideList });
+    const { currentSlide, slideList, currentSlideIndex } = get();
+    if (currentSlide) {
+      const newSlideList = [...slideList];
+      newSlideList[currentSlideIndex].imageList = imageList;
+      set({ slideList: newSlideList, currentSlide: newSlideList[currentSlideIndex] });
+    }
   },
 
   addSlide: () => {
@@ -114,14 +113,17 @@ const useSlidesStore = create(subscribeWithSelector<Store>((set, get) => ({
     const newSlideList = [...slideList];
     newSlideList.splice(currentDeletingSlideIndex, 1);
 
-    if (currentDeletingSlideIndex === currentSlideIndex && newSlideList.length > 0) {
-      if (currentDeletingSlideIndex === slideList.length - 1) {
-        set({ currentSlide: slideList[currentSlideIndex - 1] });
-      } else {
-        set({ currentSlide: slideList[currentSlideIndex + 1] });
+    if (newSlideList.length === 0) {
+      set({ currentSlide: undefined });
+    } else {
+      if (currentDeletingSlideIndex === currentSlideIndex) {
+        if (currentDeletingSlideIndex === slideList.length - 1) {
+          set({ currentSlide: slideList[currentSlideIndex - 1] });
+        } else {
+          set({ currentSlide: slideList[currentSlideIndex + 1] });
+        }
       }
     }
-
     set({ slideList: newSlideList });
   },
 
@@ -149,22 +151,19 @@ const useSlidesStore = create(subscribeWithSelector<Store>((set, get) => ({
   },
 
   setCurrentSlide: (slide?: Slide) => {
-    const { slideList } = get();
-    set({ currentSlide: slide, currentSlideIndex: slideList.findIndex(s => s.id === slide?.id) })
+    set({ currentSlide: slide })
   },
+})), {
+  name: 'slideList',
 })))
 
 // SYNCHRONOUS EFFECTS
 
-useSlidesStore.subscribe(({ currentSlide }) => currentSlide, function updateIndex() {
+useSlidesStore.subscribe(({ currentSlide, slideList }) => currentSlide, function updateIndex() {
   const { slideList, currentSlide } = useSlidesStore.getState()
   const newSlideIndex = slideList.findIndex(s => s.id === currentSlide?.id)
-  useSlidesStore.setState({ currentSlideIndex: newSlideIndex === -1 ? undefined : newSlideIndex })
+  useSlidesStore.setState({ currentSlideIndex: newSlideIndex })
 })
-
-
-
-
 
 
 export { useSlidesStore };

@@ -22,7 +22,6 @@ export function Home() {
     setCurrentSlide,
     currentSlideIndex,
     updateCurrentSlideCode,
-    updateCurrentSlideFilename,
     updateCurrentSlideImageList,
     addSlide,
     addNewCurrentSlideCopy,
@@ -76,7 +75,7 @@ export function Home() {
     </Button>
   );
   const dropImage = (event: DragEndEvent) => {
-    if (currentSlide && event.over && event.over.id === "droppable") {
+    if (currentSlide && event.over?.id === "droppable") {
       // If the id is comming from the list of images, we add it to the current slide
       if (event.active.id.toString().startsWith("/")) {
         // add new image to the current slide
@@ -124,7 +123,6 @@ export function Home() {
             <DroppableSlideLayout
               isPreviewMode={isPreviewMode}
               slide={currentSlide}
-              onChangeFilename={updateCurrentSlideFilename}
               onRightClickPickableImage={deleteImageFromCurrentSlide}
               onPickLocationForImage={(image) => {
                 const newSlideList = [...slideList];
@@ -153,6 +151,7 @@ export function Home() {
   const setCurrentSlideCallback = useCallback((slide: Slide | undefined) => {
     setCurrentSlide(slide);
   }, []);
+
   const renderWithBackgroundLight = (children: React.ReactNode) => {
     return (
       <div className="  h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">

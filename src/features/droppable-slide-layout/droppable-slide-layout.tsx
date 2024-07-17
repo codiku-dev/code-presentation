@@ -1,22 +1,22 @@
+import { useSlidesStore } from "@/store/use-slides-store";
 import { DraggableImageT, Slide } from "@/types/slide.types";
-import { cx } from "class-variance-authority";
-import { Minus, Square, X } from "lucide-react";
-import { DragEndEvent, useDroppable } from "@dnd-kit/core";
-import { DraggableImage } from "../draggable-image-list/draggable-image";
-import { useRef } from "react";
-import { DraggableImageList } from "../draggable-image-list/draggable-image-list";
 import { cn } from "@/utils";
+import { DragEndEvent, useDroppable } from "@dnd-kit/core";
+import { Minus, Square, X } from "lucide-react";
+import { useRef } from "react";
+import { DraggableImage } from "../draggable-image-list/draggable-image";
+import { DraggableImageList } from "../draggable-image-list/draggable-image-list";
 
 export function DroppableSlideLayout(p: {
   children: React.ReactNode;
   isPreviewMode: boolean;
   slide: Slide;
-  onChangeFilename: (filename: string) => void;
   onPickLocationForImage: (image: DraggableImageT) => void;
   selectedImage?: DraggableImageT;
   onRightClickPickableImage: (image: DraggableImageT) => void;
   onDropImage: (event: DragEndEvent) => void;
 }) {
+  const { updateCurrentSlideFilename } = useSlidesStore()
   const { isOver, setNodeRef } = useDroppable({
     id: "droppable",
   });
@@ -61,7 +61,7 @@ export function DroppableSlideLayout(p: {
           <input
             value={p.slide.fileName}
             onChange={(e) => {
-              p.onChangeFilename(e.target.value);
+              updateCurrentSlideFilename(e.target.value);
             }}
             className="focus:text-white text-center bg-transparent border-NONE"
             placeholder="todo.tsx"

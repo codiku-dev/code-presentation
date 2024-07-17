@@ -20,12 +20,6 @@ dependencies:
   '@hookform/resolvers':
     specifier: ^3.1.1
     version: 3.3.4(react-hook-form@7.51.1)
-  '@hookstate/core':
-    specifier: ^4.0.1
-    version: 4.0.1(react@18.2.0)
-  '@hookstate/subscribable':
-    specifier: ^4.0.0
-    version: 4.0.0(@hookstate/core@4.0.1)
   '@lezer/highlight':
     specifier: ^1.2.0
     version: 1.2.0
@@ -164,6 +158,9 @@ dependencies:
   shiki-magic-move:
     specifier: ^0.4.2
     version: 0.4.2(react@18.2.0)(shiki@1.10.1)
+  simple-zustand-devtools:
+    specifier: ^1.1.0
+    version: 1.1.0(@types/react-dom@18.2.22)(@types/react@18.2.67)(react-dom@18.2.0)(react@18.2.0)(zustand@4.5.4)
   tailwind-merge:
     specifier: ^1.13.2
     version: 1.14.0
@@ -185,7 +182,7 @@ dependencies:
 
 devDependencies:
   '@types/node':
-    specifier: ^20.3.2
+    specifier: ^20.11.28
     version: 20.11.28
   '@types/prettier':
     specifier: ^3.0.0
@@ -235,6 +232,9 @@ devDependencies:
   vite-tsconfig-paths:
     specifier: ^4.2.0
     version: 4.3.2(typescript@5.4.2)(vite@4.5.2)
+  zustymiddleware:
+    specifier: ^1.2.0
+    version: 1.2.0
 
 packages:
 
@@ -891,22 +891,6 @@ packages:
       react-hook-form: ^7.0.0
     dependencies:
       react-hook-form: 7.51.1(react@18.2.0)
-    dev: false
-
-  /@hookstate/core@4.0.1(react@18.2.0):
-    resolution: {integrity: sha512-Uh2D8Z0z/pqOJ7t+SfC+2sj13JQcB4yFhtL+T1choCaBxTSlgOS/CKRBohgJ4cjTKoxOmTT8uSQysu3gUjX+Gw==}
-    peerDependencies:
-      react: ^16.8.6 || ^17.0.0 || ^18.0.0
-    dependencies:
-      react: 18.2.0
-    dev: false
-
-  /@hookstate/subscribable@4.0.0(@hookstate/core@4.0.1):
-    resolution: {integrity: sha512-IBvb4sfQ99cUmHpPjLbM0u4jluU6Ou0e9hUGvk9vHYPK8zbQmvUV+uz0KfV1wqGow3YqIrtiUJ4Jjebeg57JVw==}
-    peerDependencies:
-      '@hookstate/core': ^4.0.0
-    dependencies:
-      '@hookstate/core': 4.0.1(react@18.2.0)
     dev: false
 
   /@humanwhocodes/config-array@0.11.14:
@@ -4903,6 +4887,22 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
+  /simple-zustand-devtools@1.1.0(@types/react-dom@18.2.22)(@types/react@18.2.67)(react-dom@18.2.0)(react@18.2.0)(zustand@4.5.4):
+    resolution: {integrity: sha512-Axfcfr9L3YL3kto7aschCQLY2VUlXXMnIVtaTe9Y0qWbNmPsX/y7KsNprmxBZoB0pww5ZGs1u/ohcrvQ3tE6jA==}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      '@types/react-dom': '>=18.0.0'
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
+      zustand: '>=1.0.2'
+    dependencies:
+      '@types/react': 18.2.67
+      '@types/react-dom': 18.2.22
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      zustand: 4.5.4(@types/react@18.2.67)(react@18.2.0)
+    dev: false
+
   /slash@3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
@@ -5445,3 +5445,7 @@ packages:
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
+
+  /zustymiddleware@1.2.0:
+    resolution: {integrity: sha512-N2/OrW3r5TwX5slwSwk81xynDnM24pWkcIjvoHDeGJJY/fKrfKjZ4EmvvADKANeMPkkCp4Mkf49Ok2BhDR0scg==}
+    dev: true
