@@ -55,7 +55,7 @@ const useSlidesStore = create(devtools(persist(subscribeWithSelector<Store>((set
     if (currentSlide) {
       const newSlideList = [...slideList];
       newSlideList[currentSlideIndex].imageList = imageList;
-      set({ slideList: newSlideList, currentSlide: newSlideList[currentSlideIndex] });
+      set({ slideList: newSlideList });
     }
   },
 
