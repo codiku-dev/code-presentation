@@ -7,8 +7,8 @@ import { DraggableImageT, Slide } from "../types/slide.types";
 
 type Store = {
   slideList: Slide[];
-  currentSlide?: Slide;
   currentSlideIndex: number;
+  getCurrentSlide: () => Slide;
   updateCurrentSlideCode: (code: string) => void;
   updateCurrentSlideFilename: (filename: string) => void;
   updateCurrentSlideImageList: (imageList: DraggableImageT[]) => void;
@@ -19,7 +19,8 @@ type Store = {
   goToPreviousSlide: () => void;
   goToNextSlide: () => void;
   setSlideList: (slides: Slide[]) => void;
-  setCurrentSlide: (slide?: Slide) => void;
+  setCurrentSlide: (slide: Slide) => void;
+  setSlideOrder: (reorderdSlides: Slide[]) => void;
 }
 
 
@@ -31,10 +32,14 @@ const useSlidesStore = create(devtools(persist(subscribeWithSelector<Store>((set
   //STATE
 
   slideList: [],
-  currentSlide: undefined,
   currentSlideIndex: -1,
 
   // SYNCHRONOUS ACTIONS
+
+  getCurrentSlide: () => {
+    const { slideList, currentSlideIndex } = get();
+    return slideList[currentSlideIndex];
+  },
 
   updateCurrentSlideCode: (code: string) => {
     const { slideList, currentSlideIndex } = get();
@@ -51,12 +56,10 @@ const useSlidesStore = create(devtools(persist(subscribeWithSelector<Store>((set
   },
 
   updateCurrentSlideImageList: (imageList: DraggableImageT[]) => {
-    const { currentSlide, slideList, currentSlideIndex } = get();
-    if (currentSlide) {
-      const newSlideList = [...slideList];
-      newSlideList[currentSlideIndex].imageList = imageList;
-      set({ slideList: newSlideList });
-    }
+    const { slideList, currentSlideIndex } = get();
+    const newSlideList = [...slideList];
+    newSlideList[currentSlideIndex].imageList = imageList;
+    set({ slideList: newSlideList });
   },
 
   addSlide: () => {
@@ -71,7 +74,7 @@ const useSlidesStore = create(devtools(persist(subscribeWithSelector<Store>((set
         imageList: [],
         id: uuidv4(),
       };
-      set({ slideList: [newSlide], currentSlide: newSlide });
+      set({ slideList: [newSlide], currentSlideIndex: 0 });
     } else {
       const previousSlide = { ...slideList[slideList.length - 1] };
       const newSlide = {
@@ -82,28 +85,26 @@ const useSlidesStore = create(devtools(persist(subscribeWithSelector<Store>((set
           id: uuidv4(),
         })),
       };
-      set({ slideList: [...slideList, newSlide], currentSlide: newSlide });
+      set({ slideList: [...slideList, newSlide], currentSlideIndex: slideList.length });
     }
   },
 
   addNewCurrentSlideCopy: (code: string) => {
-    const { slideList, currentSlide } = get();
-    if (currentSlide) {
-      const slideListToUpdate = [...slideList];
-      const currentSlideIndex = slideListToUpdate.findIndex(
-        (slide) => slide.id === currentSlide.id
-      );
-      slideListToUpdate.splice(currentSlideIndex + 1, 0, {
-        ...currentSlide,
-        code,
+    const { slideList, getCurrentSlide } = get();
+    const slideListToUpdate = [...slideList];
+    const currentSlideIndex = slideListToUpdate.findIndex(
+      (slide) => slide.id === getCurrentSlide().id
+    );
+    slideListToUpdate.splice(currentSlideIndex + 1, 0, {
+      ...getCurrentSlide(),
+      code,
+      id: uuidv4(),
+      imageList: getCurrentSlide().imageList.map((image) => ({
+        ...image,
         id: uuidv4(),
-        imageList: currentSlide.imageList.map((image) => ({
-          ...image,
-          id: uuidv4(),
-        })),
-      });
-      set({ slideList: slideListToUpdate });
-    }
+      })),
+    });
+    set({ slideList: slideListToUpdate });
   },
   deleteSlide: (slide: Slide) => {
     const { slideList, currentSlideIndex } = get();
@@ -114,13 +115,18 @@ const useSlidesStore = create(devtools(persist(subscribeWithSelector<Store>((set
     newSlideList.splice(currentDeletingSlideIndex, 1);
 
     if (newSlideList.length === 0) {
-      set({ currentSlide: undefined });
+      set({ currentSlideIndex: -1 });
     } else {
+
       if (currentDeletingSlideIndex === currentSlideIndex) {
         if (currentDeletingSlideIndex === slideList.length - 1) {
-          set({ currentSlide: slideList[currentSlideIndex - 1] });
+          set({ currentSlideIndex: newSlideList.length - 1 });
         } else {
-          set({ currentSlide: slideList[currentSlideIndex + 1] });
+          set({ currentSlideIndex: newSlideList.length - 1 });
+        }
+      } else {
+        if (currentDeletingSlideIndex < currentSlideIndex) {
+          set({ currentSlideIndex: currentSlideIndex - 1 });
         }
       }
     }
@@ -138,32 +144,41 @@ const useSlidesStore = create(devtools(persist(subscribeWithSelector<Store>((set
 
   goToPreviousSlide: () => {
     const { slideList, currentSlideIndex } = get();
-    set({ currentSlide: slideList[currentSlideIndex - 1] });
+    set({ currentSlideIndex: currentSlideIndex - 1 });
   },
 
   goToNextSlide: () => {
     const { slideList, currentSlideIndex } = get();
-    set({ currentSlide: slideList[currentSlideIndex + 1] });
+    set({ currentSlideIndex: currentSlideIndex + 1 });
   },
 
   setSlideList: (slides: Slide[]) => {
     set({ slideList: slides });
   },
 
-  setCurrentSlide: (slide?: Slide) => {
-    set({ currentSlide: slide })
+  setSlideOrder: (reorderdSlides: Slide[]) => {
+    const { getCurrentSlide } = get();
+    const currentSlide = getCurrentSlide()
+    const reorderedIndex = reorderdSlides.findIndex(s => s.id === getCurrentSlide().id);
+    set({ currentSlideIndex: reorderedIndex, slideList: reorderdSlides });
   },
+  setCurrentSlide: (slide: Slide) => {
+    const { slideList } = get();
+    const index = slideList.findIndex(s => s.id === slide.id);
+    set({ currentSlideIndex: index });
+  },
+
 })), {
   name: 'slideList',
 })))
 
 // SYNCHRONOUS EFFECTS
 
-useSlidesStore.subscribe(({ currentSlide, slideList }) => currentSlide, function updateIndex() {
-  const { slideList, currentSlide } = useSlidesStore.getState()
-  const newSlideIndex = slideList.findIndex(s => s.id === currentSlide?.id)
-  useSlidesStore.setState({ currentSlideIndex: newSlideIndex, currentSlide: slideList[newSlideIndex] })
-})
+// useSlidesStore.subscribe(({  slideList }) => currentSlide, function updateIndex() {
+//   const { slideList, currentSlide } = useSlidesStore.getState()
+//   const newSlideIndex = slideList.findIndex(s => s.id === currentSlide?.id)
+//   useSlidesStore.setState({ currentSlideIndex: newSlideIndex, currentSlide: slideList[newSlideIndex] })
+// })
 
 
 export { useSlidesStore };

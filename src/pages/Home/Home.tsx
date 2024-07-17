@@ -18,8 +18,7 @@ export function Home() {
   const {
     slideList,
     setSlideList,
-    currentSlide,
-    setCurrentSlide,
+    getCurrentSlide,
     currentSlideIndex,
     updateCurrentSlideCode,
     updateCurrentSlideImageList,
@@ -29,9 +28,13 @@ export function Home() {
     deleteImageFromCurrentSlide,
     goToPreviousSlide,
     goToNextSlide,
+    setCurrentSlide,
+    setSlideOrder,
   } = useSlidesStore();
 
+  const currentSlide = getCurrentSlide()
   useEffect(() => {
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (isPreviewMode) {
         if (
@@ -148,7 +151,7 @@ export function Home() {
     </div>
   );
 
-  const setCurrentSlideCallback = useCallback((slide: Slide | undefined) => {
+  const setCurrentSlideCallback = useCallback((slide: Slide) => {
     setCurrentSlide(slide);
   }, []);
 
@@ -163,7 +166,7 @@ export function Home() {
               onClickItem={setCurrentSlideCallback}
               onClickAdd={addSlide}
               onClickDelete={deleteSlide}
-              onChangeOrder={setSlideList}
+              onChangeOrder={setSlideOrder}
             />
           )}
           <DndContext
