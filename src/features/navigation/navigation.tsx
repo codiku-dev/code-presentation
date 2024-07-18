@@ -8,7 +8,7 @@ import DraggableList from "react-draggable-list";
 import { SlideAddThumbnail } from "./slide-add-thumbnail";
 
 export const Navigation = () => {
-  const { slideList, getCurrentSlide, setCurrentSlide, deleteSlide, addSlide, setSlideOrder } = useSlidesStore();
+  const { slideList, getCurrentSlide, setCurrentSlide, deleteSlide, addSlide, setSlideOrder, addNewSlideBefore } = useSlidesStore();
 
   const template = (props: any) => {
     return (
@@ -19,6 +19,7 @@ export const Navigation = () => {
         currentSlide={getCurrentSlide()}
         onClickAdd={addSlide}
         onChangeOrder={setSlideOrder}
+        onClickAddNewSlideBefore={addNewSlideBefore}
       />
     );
   };
@@ -48,6 +49,7 @@ type DraggableSlideThumbnailTemplateProps = {
   currentSlide?: Slide;
   onClickItem: (slide: Slide) => void;
   onClickDelete: (slide: Slide) => void;
+  onClickAddNewSlideBefore: (slide: Slide) => void;
 };
 const DraggableSlideThumbnailTemplate = (p: DraggableSlideThumbnailTemplateProps) => {
   const scale = p.itemSelected * 0.05 + 1;
@@ -62,14 +64,15 @@ const DraggableSlideThumbnailTemplate = (p: DraggableSlideThumbnailTemplateProps
   }, [p.item.id]);
 
   const buttonAddSlideBefore = (
-    <div className="group  h-6 cursor-pointer" onClick={(e) => {
+    <div className="group  h-6 cursor-pointer " onClick={(e) => {
       e.preventDefault();
       e.stopPropagation();
+      p.onClickAddNewSlideBefore(p.item)
     }}>
       <Plus
         size={12}
         className={cx(
-          "invisible group-hover:visible  mt-[0.30rem] w-full flex-center   group-hover:bg-primary/30 text-white text-xs  rounded-md"
+          "invisible group-hover:visible group-hover:animate-fadeIn02  group-active:bg-primary/20 mt-[0.30rem] w-full flex-center   group-hover:bg-primary/30 text-white text-xs  rounded-md"
         )}
       />
     </div>

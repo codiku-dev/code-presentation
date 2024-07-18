@@ -21,6 +21,7 @@ type Store = {
   setSlideList: (slides: Slide[]) => void;
   setCurrentSlide: (slide: Slide) => void;
   setSlideOrder: (reorderdSlides: Slide[]) => void;
+  addNewSlideBefore: (slide: Slide) => void;
 }
 
 
@@ -63,13 +64,7 @@ const useSlidesStore = create(devtools(persist(subscribeWithSelector<Store>((set
   addSlide: () => {
     const { slideList } = get();
     if (slideList.length === 0) {
-      const newSlide: Slide = {
-        fileName: "code.tsx",
-        code: ``,
-        imageList: [],
-        id: uuidv4(),
-      };
-      set({ slideList: [newSlide], currentSlideIndex: 0 });
+      set({ slideList: [getNewEmptySlide()], currentSlideIndex: 0 });
     } else {
       const previousSlide = { ...slideList[slideList.length - 1] };
       const newSlide = {
@@ -138,13 +133,11 @@ const useSlidesStore = create(devtools(persist(subscribeWithSelector<Store>((set
   },
 
   goToPreviousSlide: () => {
-    const { slideList, currentSlideIndex } = get();
-    set({ currentSlideIndex: currentSlideIndex - 1 });
+    set(({ currentSlideIndex }) => ({ currentSlideIndex: currentSlideIndex - 1 }));
   },
 
   goToNextSlide: () => {
-    const { slideList, currentSlideIndex } = get();
-    set({ currentSlideIndex: currentSlideIndex + 1 });
+    set(({ currentSlideIndex }) => ({ currentSlideIndex: currentSlideIndex + 1 }));
   },
 
   setSlideList: (slides: Slide[]) => {
@@ -153,7 +146,6 @@ const useSlidesStore = create(devtools(persist(subscribeWithSelector<Store>((set
 
   setSlideOrder: (reorderdSlides: Slide[]) => {
     const { getCurrentSlide } = get();
-    const currentSlide = getCurrentSlide()
     const reorderedIndex = reorderdSlides.findIndex(s => s.id === getCurrentSlide().id);
     set({ currentSlideIndex: reorderedIndex, slideList: reorderdSlides });
   },
@@ -162,12 +154,27 @@ const useSlidesStore = create(devtools(persist(subscribeWithSelector<Store>((set
     const index = slideList.findIndex(s => s.id === slide.id);
     set({ currentSlideIndex: index });
   },
+  addNewSlideBefore: (slide: Slide) => {
+    const { slideList, currentSlideIndex } = get();
+    const slideToAddBeforeIndex = slideList.findIndex(s => s.id === slide.id);
+    const newSlideList = [...slideList];
+    newSlideList.splice(slideToAddBeforeIndex, 0, getNewEmptySlide())
+    set({ slideList: newSlideList, currentSlideIndex: slideToAddBeforeIndex <= currentSlideIndex ? currentSlideIndex + 1 : currentSlideIndex });
+  },
 
 })), {
   name: 'slideList',
 })))
 
 
+function getNewEmptySlide(): Slide {
+  return {
+    fileName: "code.tsx",
+    code: ``,
+    imageList: [],
+    id: uuidv4(),
+  };
+}
 
 export { useSlidesStore };
 
