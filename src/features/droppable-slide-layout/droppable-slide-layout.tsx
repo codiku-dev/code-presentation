@@ -11,10 +11,9 @@ export function DroppableSlideLayout(p: {
   children: React.ReactNode;
   isPreviewMode: boolean;
   selectedImage?: DraggableImageT;
-
 }) {
-  const { updateCurrentSlideFilename, deleteImageFromCurrentSlide, getCurrentSlide } = useSlidesStore()
-  const currentSlide = getCurrentSlide()
+  const { updateCurrentSlideFilename, deleteImageFromCurrentSlide, getCurrentSlide } = useSlidesStore();
+  const currentSlide = getCurrentSlide();
   const { isOver, setNodeRef } = useDroppable({
     id: "droppable",
   });
@@ -75,13 +74,7 @@ export function DroppableSlideLayout(p: {
   );
 
   const droppableSection = (
-    <div
-      ref={setNodeRef}
-      className={cn(
-        "relative h-[90vh] min-w-[70vw]",
-        isOver && "bg-purple-300/10"
-      )}
-    >
+    <div ref={setNodeRef} className={cn("relative h-[90vh] min-w-[70vw]", isOver && "bg-purple-300/10")}>
       {p.children}
       {renderDraggedImageList()}
     </div>
