@@ -1,4 +1,4 @@
-import { Slide } from "@/types/slide.types";
+import { useSlidesStore } from "@/store/use-slides-store";
 import { useEffect, useState } from "react";
 import {
   BundledTheme,
@@ -9,7 +9,8 @@ import "shiki-magic-move/dist/style.css";
 import { ShikiMagicMove } from "shiki-magic-move/react";
 const CODE_THEME: BundledTheme = "dracula";
 
-export function SlidePreview(p: { slide: Slide }) {
+export function SlidePreview() {
+  const { getCurrentSlide } = useSlidesStore();
   const [highlighter, setHighlighter] = useState<HighlighterCore>();
 
   const renderAnimatedCode = () => {
@@ -19,7 +20,7 @@ export function SlidePreview(p: { slide: Slide }) {
           lang="tsx"
           theme={CODE_THEME}
           highlighter={highlighter!}
-          code={p.slide.code || ""}
+          code={getCurrentSlide().code || ""}
           className={"leading-[28px] text-[20px]"}
           options={{
             duration: 800,

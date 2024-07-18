@@ -1,4 +1,3 @@
-import { Slide } from "@/types/slide.types";
 import { javascript } from "@codemirror/lang-javascript";
 import { dracula } from "@uiw/codemirror-theme-dracula";
 import CodeMirror, { ReactCodeMirrorRef } from "@uiw/react-codemirror";
@@ -9,16 +8,16 @@ import "./slide-input.css";
 
 import { Progress } from "@/components/ui/progress";
 import { toast } from "@/components/ui/use-toast";
+import { useSlidesStore } from "@/store/use-slides-store";
 import { memo, useEffect, useRef } from "react";
-
-const TOAST_DURATION = 5000;
+const EXTENSIONS = [javascript({ jsx: true, typescript: true })]
+const TOAST_DURATION = 6000;
 export const SlideInput = memo(
   (p: {
-    slide: Slide;
     style?: React.CSSProperties;
-    onCodeChange: (code: string) => void;
-    onCutAndCreateSlide?: (code: string) => void;
   }) => {
+    const { updateCurrentSlideCode, addNewCurrentSlideCopy, getCurrentSlide } = useSlidesStore();
+    const currentSlide = getCurrentSlide()
     const codeMirrorRef = useRef<ReactCodeMirrorRef>(null);
     const refProgress = useRef(0);
     const toastRef = useRef<any>(null);
@@ -28,20 +27,22 @@ export const SlideInput = memo(
       content: string;
       anchor: number | null;
     }>({ lineNumber: null, content: "", anchor: null });
-    const oldCodeRef = useRef(p.slide.code);
+    const oldCodeRef = useRef(currentSlide.code);
+
     useEffect(() => {
       const handleKeyDown = async (event: KeyboardEvent) => {
-        if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+        if ((event.ctrlKey || event.metaKey) && (event.key === "s" || event.key === "S")) {
           event.preventDefault();
-          const formattedCode = await prettier.format(p.slide.code, {
+          const formattedCode = await prettier.format(currentSlide.code, {
             semi: false,
             parser: "babel",
             plugins: [esTree, babel],
           });
-          p.onCodeChange(formattedCode);
+          updateCurrentSlideCode(formattedCode);
+
         } else if (event.altKey && refProgress.current > 0) {
           event.preventDefault();
-          p.onCutAndCreateSlide?.(oldCodeRef.current);
+          addNewCurrentSlideCopy(oldCodeRef.current);
           toastRef.current.dismiss();
           clearInterval(intervalProgressUpdate);
           refProgress.current = 0;
@@ -53,12 +54,12 @@ export const SlideInput = memo(
       return () => {
         window.removeEventListener("keydown", handleKeyDown);
       };
-    }, [p.slide.code, p.onCodeChange]);
+    }, [currentSlide.code]);
 
     const startToastProgress = (toastRef: any) => {
-      const updateFrequency = TOAST_DURATION / 100 / 15;
+      const updateFrequency = TOAST_DURATION / 3000;
       intervalProgressUpdate = setInterval(() => {
-        refProgress.current = refProgress.current + 0.1;
+        refProgress.current = refProgress.current + 0.05;
         toastRef.current.update({
           id: toastRef.current.id,
           description: renderToastDescription(),
@@ -88,10 +89,18 @@ export const SlideInput = memo(
     return (
       <div className="code-text-input">
         <CodeMirror
+          placeholder={`// Write your code here
+
+// You can drag emoji (right click to delete)
+
+// You can use ctrl+s to prettify the code
+
+// To quickly create an animation, press ctrl+x on a line, then press alt
+// this will create a new slide with the code before you cut it`}
           ref={codeMirrorRef}
-          value={p.slide.code}
+          value={currentSlide.code}
           onCutCapture={(e) => {
-            oldCodeRef.current = p.slide.code;
+            oldCodeRef.current = currentSlide.code;
             toastRef.current = toast({
               title: "Quick create",
               description: renderToastDescription(),
@@ -109,7 +118,6 @@ export const SlideInput = memo(
             foldGutter: false,
           }}
           onStatistics={(data) => {
-            // console.log(JSON.stringify(data, null, 2))
             if (data.selectionAsSingle.from !== 0) {
               selectedLineRef.current = {
                 lineNumber: data.line.number,
@@ -118,15 +126,9 @@ export const SlideInput = memo(
               };
             }
           }}
-          // onKeyDown={(e) => {
-          //   if ((e.key === "x" || e.key === "X") && e.metaKey && e.shiftKey) {
-          //     cutCode(e);
-          //   }
-          // }}
-          extensions={[javascript({ jsx: true, typescript: true })]}
-          onChange={(value, viewUpdate) => {
-            p.onCodeChange(value);
-          }}
+
+          extensions={EXTENSIONS}
+          onChange={updateCurrentSlideCode}
         />
       </div>
     );

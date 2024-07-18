@@ -1,7 +1,7 @@
 import { useSlidesStore } from "@/store/use-slides-store";
-import { DraggableImageT, Slide } from "@/types/slide.types";
+import { DraggableImageT } from "@/types/slide.types";
 import { cn } from "@/utils";
-import { DragEndEvent, useDroppable } from "@dnd-kit/core";
+import { useDroppable } from "@dnd-kit/core";
 import { Minus, Square, X } from "lucide-react";
 import { useRef } from "react";
 import { DraggableImage } from "../draggable-image-list/draggable-image";
@@ -10,20 +10,18 @@ import { DraggableImageList } from "../draggable-image-list/draggable-image-list
 export function DroppableSlideLayout(p: {
   children: React.ReactNode;
   isPreviewMode: boolean;
-  slide: Slide;
-  onPickLocationForImage: (image: DraggableImageT) => void;
   selectedImage?: DraggableImageT;
-  onRightClickPickableImage: (image: DraggableImageT) => void;
-  onDropImage: (event: DragEndEvent) => void;
+
 }) {
-  const { updateCurrentSlideFilename } = useSlidesStore()
+  const { updateCurrentSlideFilename, deleteImageFromCurrentSlide, getCurrentSlide } = useSlidesStore()
+  const currentSlide = getCurrentSlide()
   const { isOver, setNodeRef } = useDroppable({
     id: "droppable",
   });
   const refLayout = useRef<HTMLDivElement>(null);
 
   const renderDraggedImageList = () => {
-    return p.slide.imageList.map((image, index) => {
+    return currentSlide.imageList.map((image, index) => {
       return (
         <div
           //className={cx(p.isPreviewMode && "animate-fadeIn")}
@@ -38,7 +36,7 @@ export function DroppableSlideLayout(p: {
           onContextMenu={(e) => {
             if (!p.isPreviewMode) {
               e.preventDefault();
-              p.onRightClickPickableImage(image);
+              deleteImageFromCurrentSlide(image);
             }
           }}
         >
@@ -56,10 +54,10 @@ export function DroppableSlideLayout(p: {
     <div className="relative flex ">
       <div className="absolute left-1/2 transform -translate-x-1/2 text-xs text-gray-500">
         {p.isPreviewMode ? (
-          <div className="text-center">{p.slide.fileName}</div>
+          <div className="text-center">{currentSlide.fileName}</div>
         ) : (
           <input
-            value={p.slide.fileName}
+            value={currentSlide.fileName}
             onChange={(e) => {
               updateCurrentSlideFilename(e.target.value);
             }}
@@ -109,7 +107,7 @@ export function DroppableSlideLayout(p: {
         {droppableSection}
       </div>
 
-      {p.slide && emojiList}
+      {currentSlide && emojiList}
     </div>
   );
 }

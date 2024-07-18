@@ -1,4 +1,5 @@
 import { SlideThumbnail } from "@/components/slide-thumbnail/slide-thumbnail";
+import { useSlidesStore } from "@/store/use-slides-store";
 import { Slide } from "@/types/slide.types";
 import { cx } from "class-variance-authority";
 import { useCallback } from "react";
@@ -6,23 +7,19 @@ import DraggableList from "react-draggable-list";
 import { SlideAddThumbnail } from "./slide-add-thumbnail";
 
 export const Navigation = (
-  (p: {
-    slideList: Slide[];
-    currentSlide?: Slide;
-    onClickItem: (slide: Slide) => void;
-    onClickAdd: () => void;
-    onClickDelete: (slide: Slide) => void;
-    onChangeOrder: (newSlides: Slide[]) => void;
-  }) => {
+  () => {
+    const { slideList, getCurrentSlide, setCurrentSlide, deleteSlide, addSlide, setSlideOrder } = useSlidesStore()
+
+
     const template = (props: any) => {
       return (
         <DraggableSlideThumbnailTemplate
           {...props}
-          onClickItem={p.onClickItem}
-          onClickDelete={p.onClickDelete}
-          currentSlide={p.currentSlide}
-          onClickAdd={p.onClickAdd}
-          onChangeOrder={p.onChangeOrder}
+          onClickItem={setCurrentSlide}
+          onClickDelete={deleteSlide}
+          currentSlide={getCurrentSlide()}
+          onClickAdd={addSlide}
+          onChangeOrder={setSlideOrder}
         />
       );
     };
@@ -32,13 +29,13 @@ export const Navigation = (
           itemKey={"id"}
           springConfig={{ stiffness: 300, damping: 25, precision: 0.01 }}
           template={template as any}
-          list={p.slideList}
+          list={slideList}
           onMoveEnd={(slides) => {
-            p.onChangeOrder(slides as Slide[]);
+            setSlideOrder(slides as Slide[]);
           }}
         />
-        <div className="">
-          <SlideAddThumbnail onClick={p.onClickAdd} />
+        <div >
+          <SlideAddThumbnail onClick={addSlide} />
         </div>
       </div>
     );
