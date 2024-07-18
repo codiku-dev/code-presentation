@@ -88,7 +88,7 @@ const DraggableSlideThumbnailTemplate = (p: DraggableSlideThumbnailTemplateProps
     >
       {buttonAddSlideBefore}
       <div {...p.dragHandleProps} style={{
-        // boxShadow: `rgba(0, 0, 0, 0.3) 0px ${shadow}px ${2 * shadow}px 0px`,
+        boxShadow: `rgba(0, 0, 0, 0.3) 0px ${shadow}px ${1.2 * shadow}px 0px`,
       }}
         className="bg-blue-400">
         <SlideThumbnail
