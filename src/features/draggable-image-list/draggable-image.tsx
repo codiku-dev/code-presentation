@@ -1,6 +1,5 @@
 import { cn } from "@/utils";
 import { useDraggable } from "@dnd-kit/core";
-import { cx } from "class-variance-authority";
 export function DraggableImage(p: {
   id: string;
   imgHref: string;
@@ -24,11 +23,11 @@ export function DraggableImage(p: {
       {...listeners}
       {...attributes}
       className={cn(
-        " cursor-pointer rounded-md  hover:bg-indigo-400/20 w-20 h-20",
+        " rounded-md  hover:bg-indigo-400/20 w-20 h-20",
         p.className
       )}
     >
-      <img src={p.imgHref} className="w-full h-full" />
+      <img src={p.imgHref} className="w-full h-full cursor-pointer" />
     </div>
   );
 }

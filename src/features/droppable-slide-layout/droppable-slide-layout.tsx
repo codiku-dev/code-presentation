@@ -29,7 +29,6 @@ export function DroppableSlideLayout(p: {
     return currentSlide.imageList.map((image, index) => {
       return (
         <div
-          //className={cx(p.isPreviewMode && "animate-fadeIn")}
           key={image.id}
           style={{
             position: "absolute",

@@ -3,6 +3,7 @@ import { DroppableSlideLayout } from "@/features/droppable-slide-layout/droppabl
 import { Navigation } from "@/features/navigation/navigation";
 import { SlideInput } from "@/features/slide-input/slide-input";
 import { SlidePreview } from "@/features/slide-preview/slide-preview";
+import { TipsBox } from "@/features/tips-box/tips-box";
 import { useSlidesStore } from "@/store/use-slides-store";
 import { cn } from "@/utils";
 import { DndContext, DragEndEvent, pointerWithin } from "@dnd-kit/core";
@@ -154,6 +155,14 @@ export function Home() {
           )}
           {children}
         </div>
+        {!isPreviewMode ? (
+          <div className="animate-fadeIn05">{madeWithLoveSignature}</div>
+        ) : (
+          <div className="animate-fadeIn05">{renderArrows()}</div>
+        )}
+        <div className="fixed bottom-3 right-5 w-72">
+          <TipsBox />
+        </div>
       </div>
     );
   };
@@ -209,12 +218,6 @@ export function Home() {
               {content}
             </DndContext>
           )}
-      {!isPreviewMode && (
-        <div className="animate-fadeIn05">{madeWithLoveSignature}</div>
-      )}
-      {isPreviewMode && (
-        <div className="animate-fadeIn05">{renderArrows()}</div>
-      )}
     </div>
   );
 }

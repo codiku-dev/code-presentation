@@ -103,14 +103,7 @@ export const SlideInput = memo(
       return (
         <div className="code-text-input">
           <CodeMirror
-            placeholder={`// Write your code here
-
-// You can drag emoji (right click to delete)
-
-// You can use ctrl+s to prettify the code
-
-// To quickly create an animation, press ctrl+x on a line, then press alt
-// this will create a new slide with the code before you cut it`}
+            placeholder={`// Write your code here`}
             ref={codeMirrorRef}
             value={currentSlide.code}
             onCutCapture={(e) => {
