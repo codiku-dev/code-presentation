@@ -63,7 +63,6 @@
     "tailwindcss-animate": "^1.0.6",
     "uuid": "^10.0.0",
     "uuidv4": "^6.2.13",
-    "zod": "^3.21.4",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
