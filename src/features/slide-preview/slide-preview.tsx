@@ -12,7 +12,6 @@ const CODE_THEME: BundledTheme = "dracula";
 export function SlidePreview() {
   const { getCurrentSlide } = useSlidesStore();
   const [highlighter, setHighlighter] = useState<HighlighterCore>();
-
   const renderAnimatedCode = () => {
     return (
       <div className="pl-[0.4rem] pt-1 ">

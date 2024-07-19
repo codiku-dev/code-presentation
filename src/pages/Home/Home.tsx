@@ -155,11 +155,9 @@ export function Home() {
           )}
           {children}
         </div>
-        {!isPreviewMode ? (
-          <div className="animate-fadeIn05">{madeWithLoveSignature}</div>
-        ) : (
-          <div className="animate-fadeIn05">{renderArrows()}</div>
-        )}
+
+        <div className="animate-fadeIn05">{madeWithLoveSignature}</div>
+
         <div className="fixed bottom-3 right-5 w-72">
           <TipsBox />
         </div>
@@ -186,6 +184,7 @@ export function Home() {
     </div>
   );
   const renderArrows = () => {
+    console.log("render arrows");
     return (
       <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 flex items-center space-x-4">
         <ChevronLeft
@@ -218,6 +217,7 @@ export function Home() {
               {content}
             </DndContext>
           )}
+      {isPreviewMode && <div>{renderArrows()}</div>}
     </div>
   );
 }
