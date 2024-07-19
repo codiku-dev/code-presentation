@@ -12,7 +12,12 @@ export function DroppableSlideLayout(p: {
   isPreviewMode: boolean;
   selectedImage?: DraggableImageT;
 }) {
-  const { updateCurrentSlideFilename, deleteImageFromCurrentSlide, getCurrentSlide } = useSlidesStore();
+  const {
+    updateCurrentSlideFilename,
+    deleteImageFromCurrentSlide,
+    getCurrentSlide,
+    setIsFileNameInputFocused,
+  } = useSlidesStore();
   const currentSlide = getCurrentSlide();
   const { isOver, setNodeRef } = useDroppable({
     id: "droppable",
@@ -62,6 +67,12 @@ export function DroppableSlideLayout(p: {
             }}
             className="focus:text-white text-center bg-transparent border-NONE"
             placeholder="todo.tsx"
+            onBlur={() => {
+              setIsFileNameInputFocused(false);
+            }}
+            onFocus={() => {
+              setIsFileNameInputFocused(true);
+            }}
           />
         )}
       </div>
@@ -74,7 +85,13 @@ export function DroppableSlideLayout(p: {
   );
 
   const droppableSection = (
-    <div ref={setNodeRef} className={cn("relative h-[90vh] min-w-[70vw]", isOver && "bg-purple-300/10")}>
+    <div
+      ref={setNodeRef}
+      className={cn(
+        "relative h-[90vh] min-w-[70vw]",
+        isOver && "bg-purple-300/10"
+      )}
+    >
       {p.children}
       {renderDraggedImageList()}
     </div>
