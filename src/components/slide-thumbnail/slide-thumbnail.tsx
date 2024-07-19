@@ -5,13 +5,13 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { darcula as theme } from "react-syntax-highlighter/dist/esm/styles/prism";
 import "./slide-thumbnail.css";
 export const SlideThumbnail = memo(
-  (p: { code: string; onClick: () => void; onClickTrash: () => void; isActive: boolean }) => {
+  (p: { code: string; onClick: () => void; onClickTrash: () => void; isActive: boolean; label: string }) => {
     return (
       <div
         className={cn(
           "w-32 rounded-sm h-20 overflow-y-hidden bg-black group cursor-pointer",
           " hover:ring-2  hover:ring-indigo-500 rounded-sm ",
-          p.isActive && "ring-[3px]  ring-indigo-500"
+          p.isActive && "ring-[4px]  ring-indigo-500"
         )}
         onClick={p.onClick}
       >
@@ -26,6 +26,7 @@ export const SlideThumbnail = memo(
               }}
             />
           </div>
+          <div className="absolute text-xs text-white">{p.label}</div>
           {p.code && (
             <div className="code-text-thumbnail">
               <SyntaxHighlighterMemoized code={p.code} />

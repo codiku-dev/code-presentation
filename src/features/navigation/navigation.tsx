@@ -9,17 +9,16 @@ import { SlideAddThumbnail } from "./slide-add-thumbnail";
 
 export const Navigation = () => {
   const { slideList, getCurrentSlide, setCurrentSlide, deleteSlide, addSlide, setSlideOrder, addNewSlideBefore } = useSlidesStore();
-
-  const template = (props: any) => {
+  const slideListWithIndex = slideList.map((slide, index) => ({ ...slide, index }));
+  const template = (props: DraggableSlideThumbnailTemplateProps) => {
     return (
       <DraggableSlideThumbnailTemplate
         {...props}
         onClickItem={setCurrentSlide}
         onClickDelete={deleteSlide}
         currentSlide={getCurrentSlide()}
-        onClickAdd={addSlide}
-        onChangeOrder={setSlideOrder}
         onClickAddNewSlideBefore={addNewSlideBefore}
+        label={String(props.item.index + 1)}
       />
     );
   };
@@ -30,7 +29,7 @@ export const Navigation = () => {
         itemKey={"id"}
         springConfig={{ stiffness: 300, damping: 25, precision: 0.01 }}
         template={template as any}
-        list={slideList}
+        list={slideListWithIndex}
         onMoveEnd={(slides) => {
           setSlideOrder(slides as Slide[]);
         }}
@@ -43,13 +42,14 @@ export const Navigation = () => {
 };
 
 type DraggableSlideThumbnailTemplateProps = {
-  item: Slide;
+  item: Slide & { index: number };
   itemSelected: number;
   dragHandleProps: object;
   currentSlide?: Slide;
   onClickItem: (slide: Slide) => void;
   onClickDelete: (slide: Slide) => void;
   onClickAddNewSlideBefore: (slide: Slide) => void;
+  label: string;
 };
 const DraggableSlideThumbnailTemplate = (p: DraggableSlideThumbnailTemplateProps) => {
   const scale = p.itemSelected * 0.05 + 1;
@@ -90,12 +90,14 @@ const DraggableSlideThumbnailTemplate = (p: DraggableSlideThumbnailTemplateProps
       <div {...p.dragHandleProps} style={{
         boxShadow: `rgba(0, 0, 0, 0.3) 0px ${shadow}px ${1.2 * shadow}px 0px`,
       }}
-        className="bg-blue-400">
+      >
         <SlideThumbnail
           code={p.item.code || ""}
           onClick={handleClick}
           onClickTrash={handleClickTrash}
           isActive={p.item.id == p.currentSlide?.id}
+          label={p.label}
+
         />
       </div>
     </div>
