@@ -3,7 +3,7 @@ import draggableImages from "@/features/draggable-image-list/draggableImages.jso
 
 export function DraggableImageList() {
   return (
-    <div className="rounded-md hover:animate-fadeIn0 grid grid-cols-2 gap-2 p-4">
+    <div className="rounded-md animate-fadeIn05 grid grid-cols-2 gap-2 p-4">
       {draggableImages.map((image) => (
         <DraggableImage
           key={image.filePath}

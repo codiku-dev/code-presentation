@@ -52,15 +52,17 @@ export function Home() {
   };
 
   const buttonMode = (
-    <Button
-      className={cx(
-        "absolute w-44 right-4 top-4",
-        isPreviewMode ? "opacity-50 hover:opacity-100" : "opacity-100 hover:opacity-50"
-      )}
-      onClick={() => setIsPreviewMode(!isPreviewMode)}
-    >
-      {isPreviewMode ? "Edit" : "Preview"}
-    </Button>
+    <div className="animate-fadeIn05">
+      <Button
+        className={cx(
+          "absolute w-44 right-4 top-4",
+          isPreviewMode ? "opacity-50 hover:opacity-100" : "opacity-100 hover:opacity-50"
+        )}
+        onClick={() => setIsPreviewMode(!isPreviewMode)}
+      >
+        {isPreviewMode ? "Edit" : "Preview"}
+      </Button>
+    </div>
   );
   const dropImage = (event: DragEndEvent) => {
     if (currentSlide && event.over?.id === "droppable") {
@@ -100,7 +102,7 @@ export function Home() {
     }
   };
   const content = (
-    <div className="flex gap-2 h-full">
+    <div className=" flex gap-2 h-full">
       <div className="w-full flex justify-center ">
         <div className={`h-full w-full gap-12 pt-12 overflow-y-hidde flex-center`}>
           {currentSlide && (
@@ -118,7 +120,7 @@ export function Home() {
     return (
       <div className="  h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
         <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,#d5c5ff,transparent)]">
-          {!isPreviewMode && <Navigation />}
+          {!isPreviewMode && <div className="animate-fadeIn05"><Navigation /></div>}
           {children}
         </div>
       </div>
@@ -154,16 +156,22 @@ export function Home() {
       {isPreviewMode
         ? renderWithBackgroundDark(content)
         : renderWithBackgroundLight(
-            <DndContext
-              modifiers={[restrictToWindowEdges, snapCenterToCursor]}
-              collisionDetection={pointerWithin}
-              onDragEnd={dropImage}
-            >
-              {content}
-            </DndContext>
-          )}
-      {!isPreviewMode && madeWithLoveSignature}
-      {isPreviewMode && renderArrows()}
+          <DndContext
+            modifiers={[restrictToWindowEdges, snapCenterToCursor]}
+            collisionDetection={pointerWithin}
+            onDragEnd={dropImage}
+          >
+            {content}
+          </DndContext>
+        )
+      }
+      {!isPreviewMode && <div className="animate-fadeIn05">
+        {madeWithLoveSignature}
+      </div>
+      }
+      {isPreviewMode && <div className="animate-fadeIn05">
+        {renderArrows()}
+      </div>}
     </div>
   );
 }
