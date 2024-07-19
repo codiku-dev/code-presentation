@@ -15,6 +15,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export function Home() {
   const slideInputRef = useRef<ReactCodeMirrorRef>(null);
+  const slideInputFileNameRef = useRef<HTMLInputElement>(null);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const {
     slideList,
@@ -117,7 +118,10 @@ export function Home() {
           className={`h-full w-full gap-12 pt-12 overflow-y-hidde flex-center`}
         >
           {currentSlide && (
-            <DroppableSlideLayout isPreviewMode={isPreviewMode}>
+            <DroppableSlideLayout
+              isPreviewMode={isPreviewMode}
+              slideInputFileNameRef={slideInputFileNameRef}
+            >
               {isPreviewMode ? (
                 <SlidePreview />
               ) : (
@@ -143,6 +147,7 @@ export function Home() {
                 }
                 onClick={() => {
                   slideInputRef?.current?.view?.contentDOM.blur();
+                  slideInputFileNameRef.current?.blur();
                 }}
               />
             </div>

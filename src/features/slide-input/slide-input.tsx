@@ -103,7 +103,6 @@ export const SlideInput = memo(
       return (
         <div className="code-text-input">
           <CodeMirror
-            itemID="code-text-input"
             placeholder={`// Write your code here
 
 // You can drag emoji (right click to delete)

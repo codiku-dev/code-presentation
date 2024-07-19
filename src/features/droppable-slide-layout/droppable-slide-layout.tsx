@@ -11,6 +11,7 @@ export function DroppableSlideLayout(p: {
   children: React.ReactNode;
   isPreviewMode: boolean;
   selectedImage?: DraggableImageT;
+  slideInputFileNameRef: React.RefObject<HTMLInputElement>;
 }) {
   const {
     updateCurrentSlideFilename,
@@ -61,6 +62,7 @@ export function DroppableSlideLayout(p: {
           <div className="text-center">{currentSlide.fileName}</div>
         ) : (
           <input
+            ref={p.slideInputFileNameRef}
             value={currentSlide.fileName}
             onChange={(e) => {
               updateCurrentSlideFilename(e.target.value);

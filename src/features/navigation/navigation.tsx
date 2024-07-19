@@ -3,10 +3,11 @@ import { useSlidesStore } from "@/store/use-slides-store";
 import { Slide } from "@/types/slide.types";
 import { cx } from "class-variance-authority";
 import { Plus } from "lucide-react";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect } from "react";
 import DraggableList from "react-draggable-list";
 import { SlideAddThumbnail } from "./slide-add-thumbnail";
 import { ReactCodeMirrorRef } from "@uiw/react-codemirror";
+import { toast } from "@/components/ui/use-toast";
 
 export const Navigation = (p: {
   onClick: () => void;
@@ -31,15 +32,30 @@ export const Navigation = (p: {
     ...slide,
     index,
   }));
-
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (
         (event.ctrlKey || event.metaKey) &&
         (event.key === "c" || event.key === "C")
       ) {
-        if (currentSlide) {
+        if (
+          currentSlide &&
+          p.slideInputRef?.current?.view?.hasFocus === false &&
+          isFileNameInputFocused === false
+        ) {
           setSlideIdInClipBoard(currentSlide.id);
+          toast({
+            title: "Copied slide",
+            description: (
+              <div>
+                Press
+                <kbd className="mx-2 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                  <span>Ctrl + V</span>
+                </kbd>
+                to paste
+              </div>
+            ),
+          });
         }
       } else if (
         (event.ctrlKey || event.metaKey) &&
@@ -58,7 +74,7 @@ export const Navigation = (p: {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [currentSlide]);
+  }, [currentSlide, isFileNameInputFocused]);
 
   const template = (props: DraggableSlideThumbnailTemplateProps) => {
     return (
