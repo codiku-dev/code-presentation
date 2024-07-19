@@ -21,7 +21,7 @@ export const SlideInput = memo(
     const codeMirrorRef = useRef<ReactCodeMirrorRef>(null);
     const refProgress = useRef(0);
     const toastRef = useRef<any>(null);
-    let intervalProgressUpdate: any;
+    let intervalIdProgressUpdateRef = useRef<number>();
     const selectedLineRef = useRef<{
       lineNumber: number | null;
       content: string;
@@ -39,13 +39,13 @@ export const SlideInput = memo(
             plugins: [esTree, babel],
           });
           updateCurrentSlideCode(formattedCode);
-
         } else if (event.altKey && refProgress.current > 0) {
+          clearIntervalAndProgress()
           event.preventDefault();
           addNewCurrentSlideCopy(oldCodeRef.current);
           toastRef.current.dismiss();
-          clearInterval(intervalProgressUpdate);
-          refProgress.current = 0;
+
+
         }
       };
 
@@ -54,21 +54,21 @@ export const SlideInput = memo(
       return () => {
         window.removeEventListener("keydown", handleKeyDown);
       };
-    }, [currentSlide.code]);
+    }, [currentSlide.code, refProgress.current]);
 
     const startToastProgress = (toastRef: any) => {
       const updateFrequency = TOAST_DURATION / 3000;
-      intervalProgressUpdate = setInterval(() => {
+      intervalIdProgressUpdateRef.current = setInterval(() => {
         refProgress.current = refProgress.current + 0.05;
         toastRef.current.update({
           id: toastRef.current.id,
           description: renderToastDescription(),
         });
         if (refProgress.current >= 100) {
-          clearInterval(intervalProgressUpdate);
+
           setTimeout(() => {
             toastRef.current.dismiss();
-            refProgress.current = 0;
+            clearIntervalAndProgress();
           }, 500);
         }
       }, updateFrequency);
@@ -86,6 +86,11 @@ export const SlideInput = memo(
       </div>
     );
 
+    const clearIntervalAndProgress = () => {
+      clearInterval(intervalIdProgressUpdateRef.current);
+      refProgress.current = 0;
+    }
+
     return (
       <div className="code-text-input">
         <CodeMirror
@@ -101,11 +106,14 @@ export const SlideInput = memo(
           value={currentSlide.code}
           onCutCapture={(e) => {
             oldCodeRef.current = currentSlide.code;
+            clearIntervalAndProgress();
+
             toastRef.current = toast({
               title: "Quick create",
               description: renderToastDescription(),
               duration: Infinity,
             });
+            console.log(" start progress")
             startToastProgress(toastRef);
           }}
           style={{

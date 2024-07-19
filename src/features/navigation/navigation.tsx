@@ -54,7 +54,7 @@ type DraggableSlideThumbnailTemplateProps = {
 const DraggableSlideThumbnailTemplate = (p: DraggableSlideThumbnailTemplateProps) => {
   const scale = p.itemSelected * 0.05 + 1;
   const shadow = p.itemSelected * 15 + 1;
-  const dragged = p.itemSelected !== 0;
+  // const dragged = p.itemSelected !== 0;
   const handleClick = useCallback(() => {
     p.onClickItem(p.item);
   }, [p.item.id]);

@@ -105,20 +105,15 @@ const useSlidesStore = create(devtools(persist(subscribeWithSelector<Store>((set
     newSlideList.splice(currentDeletingSlideIndex, 1);
 
     if (newSlideList.length === 0) {
-      console.log("11111")
       set({ currentSlideIndex: -1 });
     } else {
 
       if (currentDeletingSlideIndex === currentSlideIndex) {
-        console.log("2222")
         if (currentDeletingSlideIndex === slideList.length - 1) {
-          console.log("3333")
           set({ currentSlideIndex: newSlideList.length - 1 });
         }
       } else {
-        console.log("5555")
         if (currentDeletingSlideIndex < currentSlideIndex) {
-          console.log("6666")
           set({ currentSlideIndex: currentSlideIndex - 1 });
         }
       }
