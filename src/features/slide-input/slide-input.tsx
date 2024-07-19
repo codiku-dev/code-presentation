@@ -7,7 +7,7 @@ import esTree from "prettier/plugins/estree";
 import "./slide-input.css";
 
 import { Progress } from "@/components/ui/progress";
-import { toast } from "@/components/ui/use-toast";
+import { toast, useToast } from "@/components/ui/use-toast";
 import { useSlidesStore } from "@/store/use-slides-store";
 import { memo, useEffect, useRef } from "react";
 const EXTENSIONS = [javascript({ jsx: true, typescript: true })]
@@ -21,6 +21,7 @@ export const SlideInput = memo(
     const codeMirrorRef = useRef<ReactCodeMirrorRef>(null);
     const refProgress = useRef(0);
     const toastRef = useRef<any>(null);
+
     let intervalIdProgressUpdateRef = useRef<number>();
     const selectedLineRef = useRef<{
       lineNumber: number | null;
@@ -75,7 +76,7 @@ export const SlideInput = memo(
     };
     const renderToastDescription = () => (
       <div>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground mb-2">
           Press
           <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
             <span className="text-xs">alt</span>
@@ -112,9 +113,11 @@ export const SlideInput = memo(
               title: "Quick create",
               description: renderToastDescription(),
               duration: Infinity,
+
             });
             console.log(" start progress")
             startToastProgress(toastRef);
+
           }}
           style={{
             overflowX: "hidden",
