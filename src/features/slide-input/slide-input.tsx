@@ -24,6 +24,7 @@ export const SlideInput = memo(
         updateCurrentSlideCode,
         addNewCurrentSlideCopyWithCode,
         getCurrentSlide,
+        setIsCodeInputFocused,
       } = useSlidesStore();
       const currentSlide = getCurrentSlide();
 
@@ -101,11 +102,27 @@ export const SlideInput = memo(
       };
 
       return (
-        <div className="code-text-input">
+        <div
+          className="code-text-input h-full"
+          onClick={(e) => {
+            setIsCodeInputFocused(true);
+          }}
+        >
           <CodeMirror
             placeholder={`// Write your code here`}
             ref={codeMirrorRef}
             value={currentSlide.code}
+            onFocus={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsCodeInputFocused(true);
+            }}
+            onBlur={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsCodeInputFocused(false);
+              console.log("blur");
+            }}
             onCutCapture={(e) => {
               oldCodeRef.current = currentSlide.code;
               clearIntervalAndProgress();
@@ -115,20 +132,17 @@ export const SlideInput = memo(
                 description: renderToastDescription(),
                 duration: Infinity,
               });
-              console.log(" start progress");
               startToastProgress(toastRef);
             }}
             style={{
               overflowX: "hidden",
+              height: "100%",
               ...p.style,
             }}
             theme={dracula}
             basicSetup={{
               lineNumbers: false,
               foldGutter: false,
-            }}
-            onBlur={() => {
-              console.log("blur");
             }}
             onStatistics={(data) => {
               if (data.selectionAsSingle.from !== 0) {

@@ -10,7 +10,7 @@ type Store = {
   slideIdInClipBoard?: string;
   currentSlideIndex: number;
   isFileNameInputFocused: boolean;
-
+  isCodeInputFocused: boolean;
   isPreviewMode: boolean;
 
   setIsPreviewMode: (isPreviewMode: boolean) => void;
@@ -32,6 +32,7 @@ type Store = {
   addCurrentSlideCopy: () => void;
   setIsFileNameInputFocused: (isFocused: boolean) => void;
   dropImage: (event: DragEndEvent) => void;
+  setIsCodeInputFocused: (isCodeInputFocused: boolean) => void;
 };
 
 const KEYS_TO_NOT_STORE = ["slideIdInClipBoard", "isFileNameInputFocused"];
@@ -46,6 +47,7 @@ const useSlidesStore = create(
         currentSlideIndex: 0,
         slideIdInClipBoard: undefined,
         isFileNameInputFocused: false,
+        isCodeInputFocused: false,
         isPreviewMode: false,
 
         // SYNCHRONOUS ACTIONS
@@ -248,6 +250,9 @@ const useSlidesStore = create(
               updateCurrentSlideImageList(updatedImageList);
             }
           }
+        },
+        setIsCodeInputFocused: (isCodeInputFocused: boolean) => {
+          set({ isCodeInputFocused });
         },
       })),
 

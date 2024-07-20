@@ -1,7 +1,7 @@
 import { useSlidesStore } from "@/store/use-slides-store";
 import { cn } from "@/utils";
 import { Minus, Square, X } from "lucide-react";
-import { RefObject, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 import { DraggableImageList } from "../draggable-image-list/draggable-image-list";
 import { ReactCodeMirrorRef } from "@uiw/react-codemirror";
 import { SlidePreview } from "../slide-preview/slide-preview";
@@ -18,6 +18,9 @@ export function DragDropWorkspace(p: {
     setIsFileNameInputFocused,
     isPreviewMode,
     dropImage,
+    isFileNameInputFocused,
+    isCodeInputFocused,
+    setIsCodeInputFocused,
   } = useSlidesStore();
   const currentSlide = getCurrentSlide();
 
@@ -63,14 +66,27 @@ export function DragDropWorkspace(p: {
       collisionDetection={pointerWithin}
       onDragEnd={dropImage}
     >
-      <div className="flex gap-2 h-full">
+      <div
+        className="flex gap-2 h-full"
+        onClick={(e) => {
+          e.stopPropagation();
+          console.log("click on parent");
+          setIsCodeInputFocused(false);
+        }}
+      >
         <div className="w-full gap-12 pt-12 overflow-y-hidden flex-center">
           {currentSlide && (
             <div>
               <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
                 className={cn(
                   "rounded-md  border-2 border-gray-700 p-4 text-white overflow-x-hidden ",
-                  isPreviewMode ? "bg-black/60" : "bg-primary"
+                  isPreviewMode ? "bg-black/60" : "bg-primary",
+                  !isPreviewMode &&
+                    (isFileNameInputFocused || isCodeInputFocused) &&
+                    "ring-indigo-500 ring-4"
                 )}
               >
                 {renderHeader()}

@@ -78,4 +78,5 @@ body {
 
 .cm-editor {
   background-color: transparent !important;
+  height: 100% !important;
 }
