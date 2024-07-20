@@ -112,12 +112,10 @@ export const SlideInput = memo(
             placeholder={`// Write your code here`}
             ref={codeMirrorRef}
             value={currentSlide.code}
-            onFocus={(e) => {
-              setIsCodeInputFocused(true);
-            }}
             onBlur={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
               setIsCodeInputFocused(false);
-              console.log("blur");
             }}
             onCutCapture={(e) => {
               oldCodeRef.current = currentSlide.code;
