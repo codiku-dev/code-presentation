@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useSlidesStore } from "@/store/use-slides-store";
 import { cn } from "@/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -26,12 +27,9 @@ export function SlidePreview() {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (isPreviewMode) {
-        if (
-          event.key === "ArrowRight" &&
-          currentSlideIndex < slideList.length - 1
-        ) {
+        if (event.key === "ArrowRight") {
           goToNextSlide();
-        } else if (event.key === "ArrowLeft" && currentSlideIndex > 0) {
+        } else if (event.key === "ArrowLeft") {
           goToPreviousSlide();
         } else if (event.key === "Escape") {
           setIsPreviewMode(false);
@@ -46,45 +44,54 @@ export function SlidePreview() {
   }, [isPreviewMode, currentSlideIndex]);
 
   const renderArrows = () => {
-    console.log("render arrows");
     return (
-      <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 flex items-center space-x-4">
-        <ChevronLeft
-          className={cn(
-            "h-6 w-6 text-gray-300",
-            currentSlideIndex === 0 && "opacity-20 cursor-not-allowed"
-          )}
-        />
-
-        <ChevronRight
-          className={cn(
-            "h-6 w-6 text-gray-300",
-            currentSlideIndex === slideList.length - 1 &&
-              "opacity-20 cursor-not-allowed "
-          )}
-        />
+      <div className="fixed z-10 bottom-10 left-1/2 transform -translate-x-1/2 flex items-center space-x-4">
+        <Button
+          size="icon"
+          variant={"ghost"}
+          className="border-none ring-0"
+          onClick={goToPreviousSlide}
+        >
+          <ChevronLeft
+            className={cn(
+              "h-6 w-6 text-gray-300",
+              currentSlideIndex === 0 && "opacity-20 cursor-not-allowed"
+            )}
+          />
+        </Button>
+        <Button
+          size="icon"
+          className="border-none ring-0"
+          variant={"ghost"}
+          onClick={goToNextSlide}
+        >
+          <ChevronRight
+            className={cn(
+              "h-6 w-6 text-gray-300",
+              currentSlideIndex === slideList.length - 1 &&
+                "opacity-20 cursor-not-allowed "
+            )}
+          />
+        </Button>
       </div>
     );
   };
 
   const renderAnimatedCode = () => {
     return (
-      <div className="pl-[0.4rem] pt-1 ">
-        <ShikiMagicMove
-          lang="tsx"
-          theme={CODE_THEME}
-          highlighter={highlighter!}
-          code={getCurrentSlide().code || ""}
-          className={"leading-[28px] text-[20px]"}
-          options={{
-            duration: 800,
-            stagger: 0.3,
-            lineNumbers: false,
-            containerStyle: false,
-          }}
-        />
-        {isPreviewMode && <div>{renderArrows()}</div>}
-      </div>
+      <ShikiMagicMove
+        lang="tsx"
+        theme={CODE_THEME}
+        highlighter={highlighter!}
+        code={getCurrentSlide().code || ""}
+        className={"leading-[28px] text-[20px]"}
+        options={{
+          duration: 800,
+          stagger: 0.3,
+          lineNumbers: false,
+          containerStyle: false,
+        }}
+      />
     );
   };
 
@@ -99,5 +106,10 @@ export function SlidePreview() {
     initializeHighlighter();
   }, []);
 
-  return <div>{highlighter && renderAnimatedCode()}</div>;
+  return (
+    <div className="pl-[0.4rem] pt-1 ">
+      {highlighter && renderAnimatedCode()}
+      {isPreviewMode && renderArrows()}
+    </div>
+  );
 }

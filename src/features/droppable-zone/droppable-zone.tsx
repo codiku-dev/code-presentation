@@ -51,7 +51,7 @@ export const DroppableZone = (p: {
     <div
       ref={droppableSectionRef}
       className={cn(
-        "relative h-[90vh] min-w-[70vw]",
+        "h-full w-full ",
         isOverdroppableSection && "bg-purple-300/10"
       )}
     >

@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import { create } from "zustand";
 import { devtools, persist, subscribeWithSelector } from "zustand/middleware";
 import { DraggableImageT, Slide } from "../types/slide.types";
+import { DragEndEvent } from "@dnd-kit/core";
 
 type Store = {
   slideList: Slide[];
@@ -30,6 +31,7 @@ type Store = {
   setSlideIdInClipBoard: (slideId: string) => void;
   addCurrentSlideCopy: () => void;
   setIsFileNameInputFocused: (isFocused: boolean) => void;
+  dropImage: (event: DragEndEvent) => void;
 };
 
 const KEYS_TO_NOT_STORE = ["slideIdInClipBoard", "isFileNameInputFocused"];
@@ -41,7 +43,7 @@ const useSlidesStore = create(
         //STATE
 
         slideList: [],
-        currentSlideIndex: -1,
+        currentSlideIndex: 0,
         slideIdInClipBoard: undefined,
         isFileNameInputFocused: false,
         isPreviewMode: false,
@@ -133,15 +135,19 @@ const useSlidesStore = create(
         },
 
         goToPreviousSlide: () => {
-          set(({ currentSlideIndex }) => ({
-            currentSlideIndex: currentSlideIndex - 1,
-          }));
+          if (get().currentSlideIndex > 0) {
+            set(({ currentSlideIndex }) => ({
+              currentSlideIndex: currentSlideIndex - 1,
+            }));
+          }
         },
 
         goToNextSlide: () => {
-          set(({ currentSlideIndex }) => ({
-            currentSlideIndex: currentSlideIndex + 1,
-          }));
+          if (get().currentSlideIndex < get().slideList.length - 1) {
+            set(({ currentSlideIndex }) => ({
+              currentSlideIndex: currentSlideIndex + 1,
+            }));
+          }
         },
 
         setSlideList: (slides: Slide[]) => {
@@ -199,6 +205,49 @@ const useSlidesStore = create(
 
         setIsFileNameInputFocused: (isFocused: boolean) => {
           set({ isFileNameInputFocused: isFocused });
+        },
+
+        dropImage: (event: DragEndEvent) => {
+          const { getCurrentSlide, updateCurrentSlideImageList } = get();
+          const currentSlide = getCurrentSlide();
+          console.log("dropImage", event.over);
+          if (currentSlide && event.over?.id === "droppable") {
+            // If the id is coming from the list of images, we add it to the current slide
+            if (event.active.id.toString().startsWith("/")) {
+              // add new image to the current slide
+              const droppableRect = event.over.rect;
+              const mouseX = event.active.rect.current.translated?.left;
+              const mouseY = event.active.rect.current.translated?.top;
+              const relativeXToDroppable = mouseX! - droppableRect.left;
+              const relativeYToDroppable = mouseY! - droppableRect.top;
+
+              updateCurrentSlideImageList([
+                ...currentSlide.imageList,
+                {
+                  id: uuidv4(),
+                  filePath: event.active.id.toString(),
+                  x: relativeXToDroppable,
+                  y: relativeYToDroppable,
+                },
+              ]);
+            } else {
+              // Just moving the image using the delta
+              const imageIndexToUpdate = currentSlide.imageList.findIndex(
+                (img) => img.id == event.active.id.toString()
+              );
+
+              const imageToUpdate = currentSlide.imageList[imageIndexToUpdate];
+              const updatedImageList = [...currentSlide.imageList];
+
+              updatedImageList[imageIndexToUpdate] = {
+                ...imageToUpdate,
+                x: imageToUpdate.x! + event.delta.x,
+                y: imageToUpdate.y! + event.delta.y,
+              };
+
+              updateCurrentSlideImageList(updatedImageList);
+            }
+          }
         },
       })),
 
