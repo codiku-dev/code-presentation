@@ -69,8 +69,6 @@ export function DragDropWorkspace(p: {
       <div
         className="flex gap-2 h-full"
         onClick={(e) => {
-          e.stopPropagation();
-          console.log("click on parent");
           setIsCodeInputFocused(false);
         }}
       >

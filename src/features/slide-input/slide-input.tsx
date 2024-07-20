@@ -113,13 +113,9 @@ export const SlideInput = memo(
             ref={codeMirrorRef}
             value={currentSlide.code}
             onFocus={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
               setIsCodeInputFocused(true);
             }}
             onBlur={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
               setIsCodeInputFocused(false);
               console.log("blur");
             }}
