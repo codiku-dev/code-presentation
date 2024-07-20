@@ -8,6 +8,7 @@ import { SlidePreview } from "../slide-preview/slide-preview";
 import { DroppableZone } from "../droppable-zone/droppable-zone";
 import { DndContext, pointerWithin } from "@dnd-kit/core";
 import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
+import { DraggableImage } from "../draggable-image-list/draggable-image";
 export function DragDropWorkspace(p: {
   slideInputFileNameRef: RefObject<HTMLInputElement>;
   slideInputRef: RefObject<ReactCodeMirrorRef>;
@@ -21,9 +22,46 @@ export function DragDropWorkspace(p: {
     isFileNameInputFocused,
     isCodeInputFocused,
     setIsCodeInputFocused,
+    deleteImageFromCurrentSlide,
   } = useSlidesStore();
   const currentSlide = getCurrentSlide();
 
+  const renderDraggedImageList = () => {
+    return currentSlide.imageList.map((image) => {
+      return (
+        <div
+          key={image.id}
+          style={{
+            position: "absolute",
+            width: 100,
+            height: 100,
+            top: Number(image.y),
+            left: Number(image.x),
+          }}
+          onContextMenu={(e) => {
+            if (!isPreviewMode) {
+              e.preventDefault();
+              deleteImageFromCurrentSlide(image);
+            }
+          }}
+        >
+          {isPreviewMode ? (
+            <img
+              src={new URL(image.filePath, import.meta.url).href}
+              className=" w-20 h-20"
+            />
+          ) : (
+            <DraggableImage
+              key={image.id}
+              id={image.id}
+              className={"hover:bg-transparent cursor-auto"}
+              imgHref={new URL(image.filePath, import.meta.url).href}
+            />
+          )}
+        </div>
+      );
+    });
+  };
   const renderHeader = () => (
     <div className="relative flex ">
       <div className="absolute left-1/2 transform -translate-x-1/2 text-xs text-gray-500">
@@ -94,6 +132,7 @@ export function DragDropWorkspace(p: {
                   ) : (
                     <DroppableZone slideInputRef={p.slideInputRef} />
                   )}
+                  {renderDraggedImageList()}
                 </div>
               </div>
 

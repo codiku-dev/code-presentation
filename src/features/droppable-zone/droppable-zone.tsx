@@ -17,36 +17,6 @@ export const DroppableZone = (p: {
       id: "droppable",
     });
 
-  const renderDraggedImageList = () => {
-    return currentSlide.imageList.map((image) => {
-      return (
-        <div
-          key={image.id}
-          style={{
-            position: "absolute",
-            width: 100,
-            height: 100,
-            top: Number(image.y),
-            left: Number(image.x),
-          }}
-          onContextMenu={(e) => {
-            if (!isPreviewMode) {
-              e.preventDefault();
-              deleteImageFromCurrentSlide(image);
-            }
-          }}
-        >
-          <DraggableImage
-            key={image.id}
-            id={image.id}
-            className={"hover:bg-transparent cursor-auto"}
-            imgHref={new URL(image.filePath, import.meta.url).href}
-          />
-        </div>
-      );
-    });
-  };
-
   return (
     <div
       ref={droppableSectionRef}
@@ -56,7 +26,6 @@ export const DroppableZone = (p: {
       )}
     >
       <SlideInput ref={p.slideInputRef} />
-      {renderDraggedImageList()}
     </div>
   );
 };
