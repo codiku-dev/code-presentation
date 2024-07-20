@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { DragDropContext } from "@/features/drag-drop-context/drag-drop-context";
 import { DragDropWorkspace } from "@/features/drag-drop-workspace/drag-drop-workspace";
 import { Navigation } from "@/features/navigation/navigation";
 import { TipsBox } from "@/features/tips-box/tips-box";
