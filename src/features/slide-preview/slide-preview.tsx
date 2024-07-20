@@ -109,7 +109,7 @@ export function SlidePreview() {
   return (
     <div className="pl-[0.4rem] pt-1 ">
       {highlighter && renderAnimatedCode()}
-      {isPreviewMode && renderArrows()}
+      {isPreviewMode && slideList.length > 1 && renderArrows()}
     </div>
   );
 }

@@ -3,8 +3,6 @@ import { DragDropWorkspace } from "@/features/drag-drop-workspace/drag-drop-work
 import { Navigation } from "@/features/navigation/navigation";
 import { TipsBox } from "@/features/tips-box/tips-box";
 import { useSlidesStore } from "@/store/use-slides-store";
-import { DndContext, pointerWithin } from "@dnd-kit/core";
-import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
 import { ReactCodeMirrorRef } from "@uiw/react-codemirror";
 import { cx } from "class-variance-authority";
 import { useRef } from "react";
@@ -12,8 +10,7 @@ import { useRef } from "react";
 export function Home() {
   const slideInputRef = useRef<ReactCodeMirrorRef>(null);
   const slideInputFileNameRef = useRef<HTMLInputElement>(null);
-  const { isPreviewMode, setIsPreviewMode, slideList, dropImage } =
-    useSlidesStore();
+  const { isPreviewMode, setIsPreviewMode, slideList } = useSlidesStore();
 
   const renderPreviewMode = () => {
     return (
@@ -92,15 +89,9 @@ export function Home() {
   );
 
   return (
-    <DndContext
-      modifiers={[restrictToWindowEdges, snapCenterToCursor]}
-      collisionDetection={pointerWithin}
-      onDragEnd={dropImage}
-    >
-      <div className="w-screen h-full">
-        {isPreviewMode ? renderPreviewMode() : renderEditMode()}
-        {slideList.length > 0 && buttonMode}
-      </div>
-    </DndContext>
+    <div className="w-screen h-full">
+      {isPreviewMode ? renderPreviewMode() : renderEditMode()}
+      {slideList.length > 0 && buttonMode}
+    </div>
   );
 }

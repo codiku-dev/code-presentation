@@ -6,6 +6,8 @@ import { DraggableImageList } from "../draggable-image-list/draggable-image-list
 import { ReactCodeMirrorRef } from "@uiw/react-codemirror";
 import { SlidePreview } from "../slide-preview/slide-preview";
 import { DroppableZone } from "../droppable-zone/droppable-zone";
+import { DndContext, pointerWithin } from "@dnd-kit/core";
+import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
 export function DragDropWorkspace(p: {
   slideInputFileNameRef: RefObject<HTMLInputElement>;
   slideInputRef: RefObject<ReactCodeMirrorRef>;
@@ -15,6 +17,7 @@ export function DragDropWorkspace(p: {
     getCurrentSlide,
     setIsFileNameInputFocused,
     isPreviewMode,
+    dropImage,
   } = useSlidesStore();
   const currentSlide = getCurrentSlide();
 
@@ -55,30 +58,36 @@ export function DragDropWorkspace(p: {
     </div>
   );
   return (
-    <div className="flex gap-2 h-full">
-      <div className="w-full gap-12 pt-12 overflow-y-hidden flex-center">
-        {currentSlide && (
-          <div>
-            <div
-              className={cn(
-                "rounded-md  border-2 border-gray-700 p-4 text-white overflow-x-hidden ",
-                isPreviewMode ? "bg-black/60" : "bg-primary"
-              )}
-            >
-              {renderHeader()}
-              <div className="relative h-[90vh] min-w-[70vw]">
-                {isPreviewMode ? (
-                  <SlidePreview />
-                ) : (
-                  <DroppableZone slideInputRef={p.slideInputRef} />
+    <DndContext
+      modifiers={[restrictToWindowEdges, snapCenterToCursor]}
+      collisionDetection={pointerWithin}
+      onDragEnd={dropImage}
+    >
+      <div className="flex gap-2 h-full">
+        <div className="w-full gap-12 pt-12 overflow-y-hidden flex-center">
+          {currentSlide && (
+            <div>
+              <div
+                className={cn(
+                  "rounded-md  border-2 border-gray-700 p-4 text-white overflow-x-hidden ",
+                  isPreviewMode ? "bg-black/60" : "bg-primary"
                 )}
+              >
+                {renderHeader()}
+                <div className="relative h-[90vh] min-w-[70vw]">
+                  {isPreviewMode ? (
+                    <SlidePreview />
+                  ) : (
+                    <DroppableZone slideInputRef={p.slideInputRef} />
+                  )}
+                </div>
               </div>
-            </div>
 
-            {currentSlide && emojiList}
-          </div>
-        )}
+              {currentSlide && emojiList}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </DndContext>
   );
 }
