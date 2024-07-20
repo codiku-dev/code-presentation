@@ -1,4 +1,6 @@
 import { useSlidesStore } from "@/store/use-slides-store";
+import { cn } from "@/utils";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   BundledTheme,
@@ -10,8 +12,61 @@ import { ShikiMagicMove } from "shiki-magic-move/react";
 const CODE_THEME: BundledTheme = "dracula";
 
 export function SlidePreview() {
-  const { getCurrentSlide } = useSlidesStore();
+  const {
+    getCurrentSlide,
+    isPreviewMode,
+    currentSlideIndex,
+    goToNextSlide,
+    goToPreviousSlide,
+    setIsPreviewMode,
+    slideList,
+  } = useSlidesStore();
   const [highlighter, setHighlighter] = useState<HighlighterCore>();
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (isPreviewMode) {
+        if (
+          event.key === "ArrowRight" &&
+          currentSlideIndex < slideList.length - 1
+        ) {
+          goToNextSlide();
+        } else if (event.key === "ArrowLeft" && currentSlideIndex > 0) {
+          goToPreviousSlide();
+        } else if (event.key === "Escape") {
+          setIsPreviewMode(false);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isPreviewMode, currentSlideIndex]);
+
+  const renderArrows = () => {
+    console.log("render arrows");
+    return (
+      <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 flex items-center space-x-4">
+        <ChevronLeft
+          className={cn(
+            "h-6 w-6 text-gray-300",
+            currentSlideIndex === 0 && "opacity-20 cursor-not-allowed"
+          )}
+        />
+
+        <ChevronRight
+          className={cn(
+            "h-6 w-6 text-gray-300",
+            currentSlideIndex === slideList.length - 1 &&
+              "opacity-20 cursor-not-allowed "
+          )}
+        />
+      </div>
+    );
+  };
+
   const renderAnimatedCode = () => {
     return (
       <div className="pl-[0.4rem] pt-1 ">
@@ -28,6 +83,7 @@ export function SlidePreview() {
             containerStyle: false,
           }}
         />
+        {isPreviewMode && <div>{renderArrows()}</div>}
       </div>
     );
   };

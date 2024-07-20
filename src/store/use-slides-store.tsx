@@ -5,9 +5,14 @@ import { DraggableImageT, Slide } from "../types/slide.types";
 
 type Store = {
   slideList: Slide[];
+
   slideIdInClipBoard?: string;
   currentSlideIndex: number;
   isFileNameInputFocused: boolean;
+
+  isPreviewMode: boolean;
+
+  setIsPreviewMode: (isPreviewMode: boolean) => void;
   getCurrentSlide: () => Slide;
   updateCurrentSlideCode: (code: string) => void;
   updateCurrentSlideFilename: (filename: string) => void;
@@ -39,6 +44,8 @@ const useSlidesStore = create(
         currentSlideIndex: -1,
         slideIdInClipBoard: undefined,
         isFileNameInputFocused: false,
+        isPreviewMode: false,
+
         // SYNCHRONOUS ACTIONS
 
         getCurrentSlide: () => {
@@ -69,23 +76,10 @@ const useSlidesStore = create(
 
         addSlide: () => {
           const { slideList } = get();
-          // if (slideList.length === 0) {
-          //   set({ slideList: [getNewEmptySlide()], currentSlideIndex: 0 });
-          // } else {
-          // const previousSlide = { ...slideList[slideList.length - 1] };
-          // const newSlide = {
-          //   ...previousSlide,
-          //   id: uuidv4(),
-          //   imageList: previousSlide.imageList.map((image) => ({
-          //     ...image,
-          //     id: uuidv4(),
-          //   })),
-          // };
           set({
             slideList: [...slideList, getNewEmptySlide()],
             currentSlideIndex: slideList.length,
           });
-          // }
         },
 
         addNewCurrentSlideCopyWithCode: (code: string) => {
@@ -198,10 +192,16 @@ const useSlidesStore = create(
           });
           set({ slideList: slideListToUpdate });
         },
+
+        setIsPreviewMode: (isPreviewMode: boolean) => {
+          set({ isPreviewMode });
+        },
+
         setIsFileNameInputFocused: (isFocused: boolean) => {
           set({ isFileNameInputFocused: isFocused });
         },
       })),
+
       {
         name: "slideList",
         partialize: (store) =>

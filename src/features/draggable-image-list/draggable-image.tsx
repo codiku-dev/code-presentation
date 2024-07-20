@@ -5,10 +5,14 @@ export function DraggableImage(p: {
   imgHref: string;
   className?: string;
 }) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id: p.id,
-    });
+  const {
+    attributes,
+    listeners,
+    setNodeRef: draggableRef,
+    transform,
+  } = useDraggable({
+    id: p.id,
+  });
 
   const style = transform
     ? {
@@ -18,7 +22,7 @@ export function DraggableImage(p: {
 
   return (
     <div
-      ref={setNodeRef}
+      ref={draggableRef}
       style={style}
       {...listeners}
       {...attributes}

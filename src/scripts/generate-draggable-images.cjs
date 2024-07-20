@@ -1,6 +1,10 @@
 const fs = require("fs");
 const path = require("path");
 
+/* Used to generate the list of images
+ into src/features/draggable-image-list/draggableImages.json 
+based on what is present in the public/image-panel folder 
+*/
 const imageDir = path.join("public/image-panel");
 const outputFilePath = path.join(
   "src/features/draggable-image-list/draggableImages.json"
