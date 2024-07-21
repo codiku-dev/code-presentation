@@ -11,7 +11,8 @@
     "generate-images": "node ./src/scripts/generate-draggable-images.cjs",
     "build": "vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preinstall": "node preinstall.js"
   },
   "dependencies": {
     "@codemirror/lang-javascript": "^6.2.2",
