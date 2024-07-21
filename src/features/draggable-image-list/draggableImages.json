@@ -40,5 +40,11 @@
   },
   {
     "filePath": "/image-panel/thinking_face.png"
+  },
+  {
+    "filePath": "/image-panel/white_check_mark.png"
+  },
+  {
+    "filePath": "/image-panel/x.png"
   }
 ]
