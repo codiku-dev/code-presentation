@@ -90,8 +90,19 @@ export function Home() {
 
   return (
     <div className="w-screen h-full">
-      {isPreviewMode ? renderPreviewMode() : renderEditMode()}
-      {slideList.length > 0 && buttonMode}
+      <div className="invisible md:visible">
+        {isPreviewMode ? renderPreviewMode() : renderEditMode()}
+        {slideList.length > 0 && buttonMode}
+      </div>
+      <div className="md:invisible ">
+        <div className="  h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
+          <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,#d5c5ff,transparent)]">
+            <h1 className="text-center text-2xl font-bold mt-12">
+              Move to a larger screen to use code prez :)
+            </h1>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
